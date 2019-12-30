@@ -1239,6 +1239,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       if(isdigit(bat_lvl[i]) == 0)
           {
             bat_lvl[i] = '\0';
+	    break;
           }
     }
     close(fd);
