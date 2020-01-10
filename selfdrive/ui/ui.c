@@ -202,6 +202,8 @@ typedef struct UIScene {
 
   bool is_playing_alert;
   bool gps_planner_active;
+  int odometer;
+  int engineRPM;
 } UIScene;
 
 typedef struct {
@@ -1239,14 +1241,16 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       if(isdigit(bat_lvl[i]) == 0)
           {
             bat_lvl[i] = '\0';
-	    break;
+            break;
           }
     }
     close(fd);
+	
+	
 
-    snprintf(val_str, sizeof(val_str), "%s%%", bat_lvl);
+    snprintf(val_str, sizeof(val_str), "%d", (int)(scene->odometer));
     snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT LVL",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ODOMETER",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
