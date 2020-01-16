@@ -1246,9 +1246,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     }
     close(fd);
 
-
-
-    snprintf(val_str, sizeof(val_str), "%d", (int)(scene->odometer));
+    snprintf(val_str, sizeof(val_str), "%d", (int)(scene->odometer*.621371));
     snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ODOMETER",
         bb_rx, bb_ry, bb_uom_dx,
@@ -1256,6 +1254,24 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }//end of bruce's code
+  
+  
+    //enginerRPM
+  /*if (true) {
+    char val_str[16];
+    char uom_str[4];
+
+
+
+    // gps accuracy is always in meters
+    snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.engineRPM));
+    snprintf(uom_str, sizeof(uom_str), "m");;
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ENG RPM",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }*/
   
   //add grey panda GPS accuracy
   /*if (true) {
