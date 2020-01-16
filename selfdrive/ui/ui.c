@@ -1260,7 +1260,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   if (true) {
     char val_str[16];
     char uom_str[4];
-
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
     snprintf(val_str, sizeof(val_str), "%d", (s->scene.engineRPM));
     snprintf(uom_str, sizeof(uom_str), "rpm");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ENG RPM",
