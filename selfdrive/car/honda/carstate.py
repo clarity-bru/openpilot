@@ -231,8 +231,8 @@ class CarState():
 
     self.left_blinker_on = 0
     self.right_blinker_on = 0
-	self.engineRPM = 0
-	self.odometer = 0
+    self.engineRPM = 0
+    self.odometer = 0
 
     self.cruise_mode = 0
     self.stopped = 0
@@ -332,8 +332,8 @@ class CarState():
     self.right_blinker_on = cp.vl["SCM_FEEDBACK"]['RIGHT_BLINKER']
     self.brake_hold = cp.vl["VSA_STATUS"]['BRAKE_HOLD_ACTIVE']
 	
-	self.engineRPM = cp.vl["ENGINE_DATA"]["ENGINE_RPM"]
-	self.odometer = cp.vl["ENGINE_DATA"]["ODOMETER"]
+    self.engineRPM = cp.vl["ENGINE_DATA"]["ENGINE_RPM"]
+    self.odometer = cp.vl["ENGINE_DATA"]["ODOMETER"]
 
     if self.CP.carFingerprint in (CAR.CIVIC, CAR.ODYSSEY, CAR.CRV_5G, CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.CRV_HYBRID, CAR.CLARITY): #Clarity
       self.park_brake = cp.vl["EPB_STATUS"]['EPB_STATE'] != 0
