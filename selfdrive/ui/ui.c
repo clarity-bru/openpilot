@@ -1245,8 +1245,8 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
           }
     }
     close(fd);
-	
-	
+
+
 
     snprintf(val_str, sizeof(val_str), "%d", (int)(scene->odometer));
     snprintf(uom_str, sizeof(uom_str), "");
@@ -2194,12 +2194,15 @@ void handle_message(UIState *s, void *which) {
     //s->scene.gps_planner_active = datad.gpsPlannerActive;
     s->scene.monitoring_active = datad.driverMonitoringOn;
     s->scene.output_scale = pdata.output;
+    s->scene.engineRPM = datad.enginerRPM
+    s->scene.odometer = datad.odometer
 
     s->scene.frontview = datad.rearViewCam;
 
     s->scene.decel_for_model = datad.decelForModel;
 
     s->alert_sound_timeout = 1 * UI_FREQ;
+
 
     if (datad.alertSound != cereal_CarControl_HUDControl_AudibleAlert_none && datad.alertSound != s->alert_sound) {
       char* error = NULL;
