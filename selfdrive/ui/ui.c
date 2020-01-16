@@ -2194,8 +2194,6 @@ void handle_message(UIState *s, void *which) {
     //s->scene.gps_planner_active = datad.gpsPlannerActive;
     s->scene.monitoring_active = datad.driverMonitoringOn;
     s->scene.output_scale = pdata.output;
-    s->scene.engineRPM = datad.enginerRPM;
-    s->scene.odometer = datad.odometer;
 
     s->scene.frontview = datad.rearViewCam;
 
@@ -2394,6 +2392,8 @@ void handle_message(UIState *s, void *which) {
       s->scene.blinker_blinkingrate = 100;
     s->scene.leftBlinker = datad.leftBlinker;
     s->scene.rightBlinker = datad.rightBlinker;
+    s->scene.engineRPM = datad.enginerRPM;
+    s->scene.odometer = datad.odometer;
   }
   capn_free(&ctx);
   zmq_msg_close(&msg);
