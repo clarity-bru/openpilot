@@ -2392,7 +2392,7 @@ void handle_message(UIState *s, void *which) {
       s->scene.blinker_blinkingrate = 100;
     s->scene.leftBlinker = datad.leftBlinker;
     s->scene.rightBlinker = datad.rightBlinker;
-    s->scene.engineRPM = datad.enginerRPM;
+    s->scene.engineRPM = datad.engineRPM;
     s->scene.odometer = datad.odometer;
   }
   capn_free(&ctx);
