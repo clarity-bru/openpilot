@@ -37,7 +37,7 @@ def get_can_signals(CP):
   signals = [
       ("XMISSION_SPEED", "ENGINE_DATA", 0),
       ("ENGINE_RPM", "ENGINE_DATA", 0),
-      ("ODOMETER", "ENGINE_DATA", 0),
+      ("ODOMETER", "XXX_27", 0),
       ("WHEEL_SPEED_FL", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_FR", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_RL", "WHEEL_SPEEDS", 0),
