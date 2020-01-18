@@ -335,7 +335,7 @@ class CarState():
     self.brake_hold = cp.vl["VSA_STATUS"]['BRAKE_HOLD_ACTIVE']
     self.engineRPM = cp.vl["POWERTRAIN_DATA"]['ENGINE_RPM']
     self.odometer = cp.vl["XXX_27"]['ODOMETER']
-    self.tripDistance = = cp.vl["POWERTRAIN_DATA"]['TRIP_DISTANCE']
+    self.tripDistance = cp.vl["POWERTRAIN_DATA"]['TRIP_DISTANCE']
 
     if self.CP.carFingerprint in (CAR.CIVIC, CAR.ODYSSEY, CAR.CRV_5G, CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.CRV_HYBRID, CAR.CLARITY): #Clarity
       self.park_brake = cp.vl["EPB_STATUS"]['EPB_STATE'] != 0

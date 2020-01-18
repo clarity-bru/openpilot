@@ -1247,7 +1247,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     }
     close(fd);
 
-    snprintf(val_str, sizeof(val_str), "%d", (int)(scene->tripDisance));
+    snprintf(val_str, sizeof(val_str), "%d", (int)(scene->tripDistance));
     snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "TRIP KM",
         bb_rx, bb_ry, bb_uom_dx,
@@ -2408,7 +2408,7 @@ void handle_message(UIState *s, void *which) {
     s->scene.rightBlinker = datad.rightBlinker;
     s->scene.engineRPM = datad.engineRPM;
     s->scene.odometer = datad.odometer;
-    s->scene.odometer = datad.tripDistance;
+    s->scene.tripDistance = datad.tripDistance;
   }
   capn_free(&ctx);
   zmq_msg_close(&msg);
