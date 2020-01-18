@@ -204,6 +204,7 @@ typedef struct UIScene {
   bool gps_planner_active;
   int odometer;
   int engineRPM;
+  int tripDistance;
 } UIScene;
 
 typedef struct {
@@ -1246,9 +1247,9 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     }
     close(fd);
 
-    snprintf(val_str, sizeof(val_str), "%d", (int)(scene->odometer*.621371));
+    snprintf(val_str, sizeof(val_str), "%d", (int)(scene->tripDisance));
     snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ODOMETER",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "TRIP KM",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -2407,6 +2408,7 @@ void handle_message(UIState *s, void *which) {
     s->scene.rightBlinker = datad.rightBlinker;
     s->scene.engineRPM = datad.engineRPM;
     s->scene.odometer = datad.odometer;
+    s->scene.odometer = datad.tripDistance;
   }
   capn_free(&ctx);
   zmq_msg_close(&msg);
