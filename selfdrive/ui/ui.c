@@ -2419,13 +2419,14 @@ void handle_message(UIState *s, void *which) {
     //Code for loging (should be moved)
     if(s->scene.odometer > 0){
       if(engineOn == 0){
-        logEngineON(s->scene.odometer, s->scene.tripDistance);
+        logEngineOn();
+        //logEngineON(s->scene.odometer, s->scene.tripDistance);
       }
       engineOn = 1;
     }
-    elseif(s->scene.odometer == 0){
+    else if(s->scene.odometer == 0){
       if(engineOn == 1){
-        logEngineOFF();
+        logEngineOff();
       }
       engineOn = 0;
     }
@@ -2438,8 +2439,8 @@ void handle_message(UIState *s, void *which) {
 }
 
 
-
-void logEngineOn(float odometer, float tripDistance)
+//void logEngineOn(float odometer, float tripDistance)
+void logEngineOn()
 {
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
@@ -2447,19 +2448,20 @@ void logEngineOn(float odometer, float tripDistance)
   mkdir("/data/Clarity", 0755);
   
   FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
-  fprintf(out, "%f,%f", odometer, tripDistance);
+  //fprintf(out, "%f,%f", odometer, tripDistance);
+  fprintf(out, "EngineOn");
   fclose(out);
   }
   
 }
 
-void logEngineOn(float odometer, float tripDistance)
+void logEngineOn()
 {
   FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
   fprintf(out, "EngineOFF");
   fclose(out);
-  }
 }
+
 static void ui_update(UIState *s) {
   int err;
 
