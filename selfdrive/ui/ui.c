@@ -1576,12 +1576,14 @@ static void bb_ui_draw_UI(UIState *s)
       if(isEngineOn == 0){
         logEngineOn();
         //logEngineON(s->scene.odometer, s->scene.tripDistance);
+		isEngineOn = 1;
       }
       isEngineOn = 1;
     }
-    else if(scene->odometer == 0){
+    else if(scene->odometer < 1){
       if(isEngineOn == 1){
         logEngineOff();
+		isEngineOn = 0;
       }
       isEngineOn = 0;
     }
