@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <cutils/properties.h>
 
@@ -206,6 +208,9 @@ typedef struct UIScene {
   int engineRPM;
   int tripDistance;
 } UIScene;
+
+
+bool engineOn = 0;
 
 typedef struct {
   float x, y;
@@ -1247,7 +1252,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     }
     close(fd);
 
-    snprintf(val_str, sizeof(val_str), "%.2f", (scene->tripDistance)*.01);
+    snprintf(val_str, sizeof(val_str), "%.2f", (scene->tripDistance)*.001); //.001 -> m to km
     snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "TRIP KM",
         bb_rx, bb_ry, bb_uom_dx,
@@ -2409,11 +2414,52 @@ void handle_message(UIState *s, void *which) {
     s->scene.engineRPM = datad.engineRPM;
     s->scene.odometer = datad.odometer;
     s->scene.tripDistance = datad.tripDistance;
+    
+    
+    //Code for loging (should be moved)
+    if(s->scene.odometer > 0){
+      if(engineOn == 0){
+        logEngineON(s->scene.odometer, s->scene.tripDistance);
+      }
+      engineOn = 1;
+    }
+    elseif(s->scene.odometer == 0){
+      if(engineOn == 1){
+        logEngineOFF();
+      }
+      engineOn = 0;
+    }
+    
+    
+    
   }
   capn_free(&ctx);
   zmq_msg_close(&msg);
 }
 
+
+
+void logEngineOn(float odometer, float tripDistance)
+{
+  //Create Clarity folder if it doesn't exist
+  struct stat st = {0};
+  if(stat("/data/Clarity", &st) == -1){
+  mkdir("/data/Clarity", 0755);
+  
+  FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
+  fprintf(out, "%f,%f", odometer, tripDistance);
+  fclose(out);
+  }
+  
+}
+
+void logEngineOn(float odometer, float tripDistance)
+{
+  FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
+  fprintf(out, "EngineOFF");
+  fclose(out);
+  }
+}
 static void ui_update(UIState *s) {
   int err;
 
