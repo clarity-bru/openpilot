@@ -1224,7 +1224,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
     int fd;
 
-	//Read the with file with the battery level.  Not expecting anything above 100%
+	//Read the file with the battery level.  Not expecting anything above 100%
     fd = open("/sys/class/power_supply/battery/capacity", O_RDONLY);
     if(fd == -1)
     {
@@ -1247,7 +1247,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     }
     close(fd);
 
-    snprintf(val_str, sizeof(val_str), "%.1f", (scene->tripDistance));
+    snprintf(val_str, sizeof(val_str), "%.1f", (float)(scene->tripDistance));
     snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "TRIP KM",
         bb_rx, bb_ry, bb_uom_dx,
