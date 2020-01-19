@@ -5,8 +5,9 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <sys/types.h>//clarity-bru
+#include <sys/stat.h>//clarity-bru
+#include <time.h>//clariy-bru
 
 #include <cutils/properties.h>
 
@@ -211,6 +212,10 @@ typedef struct UIScene {
 
 
 bool engineOn = 0;
+
+void logEngineOn();
+void logEngineOff();
+
 
 typedef struct {
   float x, y;
@@ -2442,6 +2447,18 @@ void handle_message(UIState *s, void *which) {
 //void logEngineOn(float odometer, float tripDistance)
 void logEngineOn()
 {
+
+
+   time_t curtime;
+   struct tm *loc_time;
+ 
+
+   curtime = time (NULL);
+   loc_time = localtime (&curtime);
+   
+   // Displaying date and time in standard format
+   printf("%s", asctime (loc_time));
+   
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
   if(stat("/data/Clarity", &st) == -1){
@@ -2449,16 +2466,16 @@ void logEngineOn()
   
   FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
   //fprintf(out, "%f,%f", odometer, tripDistance);
-  fprintf(out, "EngineOn");
+  fprintf(out, "%s, EngineOn\n", asctime(loc_time));
   fclose(out);
   }
   
 }
 
-void logEngineOn()
+void logEngineOff()
 {
   FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
-  fprintf(out, "EngineOFF");
+  fprintf(out, "EngineOFF\n");
   fclose(out);
 }
 
