@@ -1571,6 +1571,21 @@ static void bb_ui_draw_UI(UIState *s)
     bb_ui_draw_measures_right(s, bb_dml_x, bb_dml_y, bb_dml_w);
     bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
 
+    //Code for loging (should be moved)
+    if(scene.odometer > 0){
+      if(isEngineOn == 0){
+        logEngineOn();
+        //logEngineON(s->scene.odometer, s->scene.tripDistance);
+      }
+      isEngineOn = 1;
+    }
+    else if(scene.odometer == 0){
+      if(isEngineOn == 1){
+        logEngineOff();
+      }
+      isEngineOn = 0;
+    }
+
 }
 
 //BB END: functions added for the display of various items
@@ -2416,25 +2431,12 @@ void handle_message(UIState *s, void *which) {
       s->scene.blinker_blinkingrate = 100;
     s->scene.leftBlinker = datad.leftBlinker;
     s->scene.rightBlinker = datad.rightBlinker;
-    s->scene.engineRPM = 199;
+    s->scene.engineRPM = datad.engineRPM;
     s->scene.odometer = datad.odometer;
     s->scene.tripDistance = datad.tripDistance;
     
     
-    //Code for loging (should be moved)
-    if(s->scene.odometer > 0){
-      if(isEngineOn == 0){
-        logEngineOn();
-        //logEngineON(s->scene.odometer, s->scene.tripDistance);
-      }
-      isEngineOn = 1;
-    }
-    else if(s->scene.odometer == 0){
-      if(isEngineOn == 1){
-        logEngineOff();
-      }
-      isEngineOn = 0;
-    }
+
     
     
     
@@ -2461,10 +2463,10 @@ void logEngineOn()
    
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
-  if(stat("/data/Clarity", &st) == -1){
-  mkdir("/data/Clarity", 0755);
+  if(stat("/data/clarity", &st) == -1){
+  mkdir("/data/clarity", 0755);
   
-  FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
+  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   //fprintf(out, "%f,%f", odometer, tripDistance);
   fprintf(out, "%s, EngineOn\n", asctime(loc_time));
   fclose(out);
@@ -2474,7 +2476,7 @@ void logEngineOn()
 
 void logEngineOff()
 {
-  FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
+  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   fprintf(out, "EngineOff\n");
   fclose(out);
 }
