@@ -38,7 +38,7 @@ def get_can_signals(CP):
       ("XMISSION_SPEED", "ENGINE_DATA", 0),
       ("ENGINE_RPM", "POWERTRAIN_DATA", 0),
       ("ODOMETER", "XXX_27", 0),
-      ("TRIP_DISTANCE", "ENGINE_DATA", 0),
+      ("TRIP_DISTANCE", "ODOMETER", 0),
       ("WHEEL_SPEED_FL", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_FR", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_RL", "WHEEL_SPEEDS", 0),
@@ -335,7 +335,7 @@ class CarState():
     self.brake_hold = cp.vl["VSA_STATUS"]['BRAKE_HOLD_ACTIVE']
     self.engineRPM = cp.vl["POWERTRAIN_DATA"]['ENGINE_RPM']
     self.odometer = cp.vl["XXX_27"]['ODOMETER']
-    self.tripDistance = cp.vl["ENGINE_DATA"]['TRIP_DISTANCE']
+    self.tripDistance = cp.vl["ENGINE_DATA"]['ODOMETER']
 
     if self.CP.carFingerprint in (CAR.CIVIC, CAR.ODYSSEY, CAR.CRV_5G, CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.CRV_HYBRID, CAR.CLARITY): #Clarity
       self.park_brake = cp.vl["EPB_STATUS"]['EPB_STATE'] != 0
