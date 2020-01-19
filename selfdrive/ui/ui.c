@@ -211,7 +211,7 @@ typedef struct UIScene {
 } UIScene;
 
 
-bool engineOn = 0;
+bool isEngineOn = 0;
 
 void logEngineOn();
 void logEngineOff();
@@ -2416,24 +2416,24 @@ void handle_message(UIState *s, void *which) {
       s->scene.blinker_blinkingrate = 100;
     s->scene.leftBlinker = datad.leftBlinker;
     s->scene.rightBlinker = datad.rightBlinker;
-    s->scene.engineRPM = datad.engineRPM;
+    s->scene.engineRPM = 199;
     s->scene.odometer = datad.odometer;
     s->scene.tripDistance = datad.tripDistance;
     
     
     //Code for loging (should be moved)
     if(s->scene.odometer > 0){
-      if(engineOn == 0){
+      if(isEngineOn == 0){
         logEngineOn();
         //logEngineON(s->scene.odometer, s->scene.tripDistance);
       }
-      engineOn = 1;
+      isEngineOn = 1;
     }
     else if(s->scene.odometer == 0){
-      if(engineOn == 1){
+      if(isEngineOn == 1){
         logEngineOff();
       }
-      engineOn = 0;
+      isEngineOn = 0;
     }
     
     
@@ -2475,7 +2475,7 @@ void logEngineOn()
 void logEngineOff()
 {
   FILE *out = fopen("/data/Clarity/engineLog.csv", "a");
-  fprintf(out, "EngineOFF\n");
+  fprintf(out, "EngineOff\n");
   fclose(out);
 }
 
