@@ -2444,7 +2444,7 @@ void logEngineEvent(bool isEningeOn, int odometer)
   if(stat("/data/clarity", &st) == -1){
   mkdir("/data/clarity", 0755);
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
-  fprintf(out, "EngineOn/Off,Odometer_km,DateTime");
+  fprintf(out, "EngineOn/Off,Odometer_km,DateTime\n");
   fclose(out);
   }
   
@@ -2457,7 +2457,7 @@ void logEngineEvent(bool isEningeOn, int odometer)
   //Write info to log
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   if(isEngineOn){
-  fprintf(out, "On,%i,%s", odometer, asctime(loc_time));
+  fprintf(out, "On ,%i,%s", odometer, asctime(loc_time));
   }else{
   fprintf(out, "Off,%i,%s", odometer, asctime(loc_time));
   }
