@@ -5,10 +5,10 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
-#include <sys/types.h>//clarity-bru
-#include <sys/stat.h>//clarity-bru
-#include <time.h>//clariy-bru
-#include <string.h>//clarity-bru
+#include <sys/types.h>//clarity-bru: files
+#include <sys/stat.h>//clarity-bru: files
+#include <time.h>//clariy-bru: time
+
 
 #include <cutils/properties.h>
 
@@ -213,9 +213,7 @@ typedef struct UIScene {
 
 
 bool isEngineOn = 0;
-
-void logEngineOn(float odometer);
-void logEngineOff();
+void logEngineEvent(bool isEngineOn, int odometer);
 
 
 typedef struct {
@@ -1258,24 +1256,9 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     }
     close(fd);
 
-    snprintf(val_str, sizeof(val_str), "%.2f", (scene->tripDistance)*.001); //.001 -> m to km
+    snprintf(val_str, sizeof(val_str), "%s%%", bat_lvl);
     snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "TRIP KM",
-        bb_rx, bb_ry, bb_uom_dx,
-        val_color, lab_color, uom_color,
-        value_fontSize, label_fontSize, uom_fontSize );
-    bb_ry = bb_y + bb_h;
-  }//end of bruce's code
-  
-  
-    //engineRPM
-  if (true) {
-    char val_str[16];
-    char uom_str[4];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    snprintf(val_str, sizeof(val_str), "%d", (s->scene.engineRPM));
-    snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ENG RPM",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT LVL",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -1319,11 +1302,10 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       val_color = nvgRGBA(255, 0, 0, 200);
     }
 
-    //snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
-    snprintf(val_str, sizeof(val_str), "%d", isEngineOn);
+    snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
     snprintf(uom_str, sizeof(uom_str), "");
 
-    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "isEngineOn",
+    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
       bb_rx, bb_ry, bb_uom_dx,
       val_color, lab_color, uom_color,
       value_fontSize, label_fontSize, uom_fontSize );
@@ -1464,6 +1446,20 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
+  
+  //engineRPM
+  if (true) {
+    char val_str[16];
+    char uom_str[4];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+    snprintf(val_str, sizeof(val_str), "%d", (s->scene.engineRPM));
+    snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ENG RPM",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
 
 
   //finally draw the frame
@@ -1576,16 +1572,13 @@ static void bb_ui_draw_UI(UIState *s)
     //Code for loging (should be moved)
     if(scene->engineRPM > 0){
       if(isEngineOn == 0){
-        logEngineOn(scene->odometer);
-        //logEngineON(s->scene.odometer, s->scene.tripDistance);
-        //isEngineOn = 1;
+        logEngineEvent(isEngineOn, scene->odometer);
       }
       isEngineOn = 1;
     }
     if(scene->engineRPM < 1){
       if(isEngineOn == 1){
-        logEngineOff();
-        //isEngineOn = 0;
+        logEngineEvent(isEngineOn, scene->odometer);
       }
       isEngineOn = 0;
     }
@@ -2438,62 +2431,40 @@ void handle_message(UIState *s, void *which) {
     s->scene.engineRPM = datad.engineRPM;
     s->scene.odometer = datad.odometer;
     s->scene.tripDistance = datad.tripDistance;
-    
-    
-
-    
-    
-    
   }
   capn_free(&ctx);
   zmq_msg_close(&msg);
 }
 
-
 //void logEngineOn(float odometer, float tripDistance)
-void logEngineOn(float odometer)
+void logEngineEvent(bool isEningeOn, int odometer)
 {
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
   if(stat("/data/clarity", &st) == -1){
   mkdir("/data/clarity", 0755);
-  }
-   time_t curtime;
-   struct tm *loc_time;
-   curtime = time (NULL);
-   loc_time = localtime (&curtime);
-   /*
-   char time[] = asctime(loc_time);
-   int len;
-   len = strlen(time);
-   if(time[len] == '\n'){
-     time[len] = '\0';
-   */
-   
-   
-   // Displaying date and time in standard format
-   //printf("%s", asctime (loc_time));
-   
-
-  
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
-  //fprintf(out, "On,%f,%f,", odometer, tripDistance);
-  fprintf(out, "On,%f,%s", odometer, asctime(loc_time));
+  fprintf(out, "EngineOn/Off,Odometer_km,DateTime");
   fclose(out);
+  }
   
-}
-
-void logEngineOff()
-{
-   time_t curtime;
+  //time
+  time_t curtime;
   struct tm *loc_time;
   curtime = time (NULL);
   loc_time = localtime (&curtime);
-   
+
+  //Write info to log
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
-  fprintf(out, "Off, %s", asctime(loc_time));
+  if(isEngineOn){
+  fprintf(out, "On,%f,%s", odometer, asctime(loc_time));
+  }else{
+  fprintf(out, "Off,%f,%s", odometer, asctime(loc_time));
+  }
   fclose(out);
 }
+
+
 
 static void ui_update(UIState *s) {
   int err;
