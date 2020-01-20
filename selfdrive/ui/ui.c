@@ -8,6 +8,7 @@
 #include <sys/types.h>//clarity-bru
 #include <sys/stat.h>//clarity-bru
 #include <time.h>//clariy-bru
+#include <string.h>//clarity-bru
 
 #include <cutils/properties.h>
 
@@ -2463,7 +2464,7 @@ void logEngineOn()
    loc_time = localtime (&curtime);
    string time = asctime(loc_time);
    int len;
-   len = strlen(time)
+   len = strlen(time);
    if(time[len] == '\n'){
      time[len] = '\0';
    }
