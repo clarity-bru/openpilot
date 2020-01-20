@@ -2457,9 +2457,9 @@ void logEngineEvent(bool isEningeOn, int odometer)
   //Write info to log
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   if(isEngineOn){
-  fprintf(out, "On,%f,%s", odometer, asctime(loc_time));
+  fprintf(out, "On,%i,%s", odometer, asctime(loc_time));
   }else{
-  fprintf(out, "Off,%f,%s", odometer, asctime(loc_time));
+  fprintf(out, "Off,%i,%s", odometer, asctime(loc_time));
   }
   fclose(out);
 }
