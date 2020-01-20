@@ -1,21 +1,21 @@
 This is a fork of kegman's branch.  His readme is below mine.
 Kegman-0.7-Clarity
--The orange warning color is now transparent for warning messages.  I want it to be less distracting for drivers behind you.
+-The MPC track is less flashy.
+-The warning message are now transparent, not orange.  I should be less distracting.
 -Added battery level indicator, which is below the battery temp indicator.
--Boot up animation changed, which includes Boo!(name of the ghost) with a red orb spinner.
+-Boot up animation changed.
 
 Kegman-0.7-Clarity-v2
--All additions from Kegman-0.7-Clarity is include with this branch
--Added engine RPM indicator below the desired steering angle indicator.  It overlaps with the Driver Monitor icon.  Fixing the overlap is a low priority.
--OpenPilot engage and disenage sounds are much quieter
--Rudamentry engine log in /data/clarity.  Logs when the engine switch on and off, and the odometer.  I want to include the tripmeter in there.  TRIP_DISTANCE from the .dbc file cycles back to zero after 2.55 km. :(
+-All additions from Kegman-0.7-Clarity is included with this branch.
+-Added engine RPM indicator.  It’s below the desired steering angle indicator.  It overlaps with the driver monitoring icon.  Fixing the overlap is a low priority.
+-The openpilot engage and disengage sounds are much quieter.
+-A rudimentary engine log is in /data/clarity.  Logs when the engine switch on and off, and the odometer.  
 
 TODO: 
-1)Figure out tripmeter for the engine log.
-2)Add more values like engine temp, coolant temp, ambient temp, battery pack temp, etc to the log. 
-3)Add a compass
-4)Move engine RPM indicator by the speed indicator and make it bigger?  Create a graphic?  Toggle engine RPM's visibility?
-
+1) Improve the engine log.  The goal was to track the number of hours and miles the combustion engine has covered.  I want to include the tripmeter in there, but trip_distance from the .dbc file cycles back to zero after 2.55 km. :(  
+2) Add more values like engine temp, coolant temp, ambient temp, battery pack temp, etc to the log. 
+3) Add a compass
+4) Move the RPM indicator by the speed indicator and make it bigger?  Create a graphic?  Toggle engine RPM's visibility?
 
 ==========
 This is a fork of comma's openpilot: https://github.com/commaai/openpilot, and contains tweaks for Hondas and GM vehicles.  It is open source and inherits MIT license.  By installing this software you accept all responsibility for anything that might occur while you use it.  All contributors to this fork are not liable.  <b>Use at your own risk.</b>
