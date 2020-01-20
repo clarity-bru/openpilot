@@ -2469,7 +2469,7 @@ void logEngineOn()
    if(time[len] == '\n'){
      time[len] = '\0';
    */
-   }
+   
    
    // Displaying date and time in standard format
    //printf("%s", asctime (loc_time));
