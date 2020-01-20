@@ -214,7 +214,7 @@ typedef struct UIScene {
 
 bool isEngineOn = 0;
 
-void logEngineOn();
+void logEngineOn(float odometer);
 void logEngineOff();
 
 
@@ -1576,7 +1576,7 @@ static void bb_ui_draw_UI(UIState *s)
     //Code for loging (should be moved)
     if(scene->engineRPM > 0){
       if(isEngineOn == 0){
-        logEngineOn();
+        logEngineOn(scene->odometer);
         //logEngineON(s->scene.odometer, s->scene.tripDistance);
         //isEngineOn = 1;
       }
@@ -2451,7 +2451,7 @@ void handle_message(UIState *s, void *which) {
 
 
 //void logEngineOn(float odometer, float tripDistance)
-void logEngineOn()
+void logEngineOn(float odometer)
 {
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
@@ -2476,17 +2476,22 @@ void logEngineOn()
    
 
   
-  FILE *out = fopen("/data/clarity/engineLogOn.csv", "a");
+  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   //fprintf(out, "On,%f,%f,", odometer, tripDistance);
-  fprintf(out, "On,%s\n", asctime (loc_time));
+  fprintf(out, "On,%f,%s", odometer, asctime(loc_time));
   fclose(out);
   
 }
 
 void logEngineOff()
 {
-  FILE *out = fopen("/data/clarity/engineLogOff.csv", "a");
-  fprintf(out, "EngineOff\n");
+   time_t curtime;
+  struct tm *loc_time;
+  curtime = time (NULL);
+  loc_time = localtime (&curtime);
+   
+  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
+  fprintf(out, "Off, %s", asctime(loc_time));
   fclose(out);
 }
 
