@@ -2478,7 +2478,7 @@ void logEngineOn()
   
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   //fprintf(out, "On,%f,%f,", odometer, tripDistance);
-  printf(out, "On,"%s\n", time);
+  printf(out, "On,%s\n", asctime (loc_time));
   fclose(out);
   
 }
