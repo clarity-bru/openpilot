@@ -1318,10 +1318,11 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       val_color = nvgRGBA(255, 0, 0, 200);
     }
 
-    snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
+    //snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
+    snprintf(val_str, sizeof(val_str), "%d", isEngineOn);
     snprintf(uom_str, sizeof(uom_str), "");
 
-    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
+    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "isEngineOn",
       bb_rx, bb_ry, bb_uom_dx,
       val_color, lab_color, uom_color,
       value_fontSize, label_fontSize, uom_fontSize );
