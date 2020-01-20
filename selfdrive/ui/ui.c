@@ -1576,14 +1576,14 @@ static void bb_ui_draw_UI(UIState *s)
       if(isEngineOn == 0){
         logEngineOn();
         //logEngineON(s->scene.odometer, s->scene.tripDistance);
-		isEngineOn = 1;
+        isEngineOn = 1;
       }
       isEngineOn = 1;
     }
-    else if(scene->odometer < 1){
+    if(scene->odometer < 1){
       if(isEngineOn == 1){
         logEngineOff();
-		isEngineOn = 0;
+        isEngineOn = 0;
       }
       isEngineOn = 0;
     }
@@ -2451,22 +2451,20 @@ void handle_message(UIState *s, void *which) {
 //void logEngineOn(float odometer, float tripDistance)
 void logEngineOn()
 {
-
-
-   time_t curtime;
-   struct tm *loc_time;
- 
-
-   curtime = time (NULL);
-   loc_time = localtime (&curtime);
-   
-   // Displaying date and time in standard format
-   printf("%s", asctime (loc_time));
-   
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
   if(stat("/data/clarity", &st) == -1){
   mkdir("/data/clarity", 0755);
+
+   time_t curtime;
+   struct tm *loc_time;
+   curtime = time (NULL);
+   loc_time = localtime (&curtime);
+   
+   // Displaying date and time in standard format
+   //printf("%s", asctime (loc_time));
+   
+
   
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   //fprintf(out, "%f,%f", odometer, tripDistance);
@@ -2478,7 +2476,7 @@ void logEngineOn()
 
 void logEngineOff()
 {
-  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
+  FILE *out = fopen("/data/clarity/engineLogOFF.csv", "a");
   fprintf(out, "EngineOff\n");
   fclose(out);
 }
