@@ -1573,18 +1573,18 @@ static void bb_ui_draw_UI(UIState *s)
     bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
 
     //Code for loging (should be moved)
-    if(scene->engineRPM> 0){
+    if(scene->odometer > 0){
       if(isEngineOn == 0){
         logEngineOn();
         //logEngineON(s->scene.odometer, s->scene.tripDistance);
-        isEngineOn = 1;
+        //isEngineOn = 1;
       }
       isEngineOn = 1;
     }
-    if(scene->engineRPM < 1){
+    if(scene->odometer < 1){
       if(isEngineOn == 1){
         logEngineOff();
-        isEngineOn = 0;
+        //isEngineOn = 0;
       }
       isEngineOn = 0;
     }
@@ -2456,11 +2456,17 @@ void logEngineOn()
   struct stat st = {0};
   if(stat("/data/clarity", &st) == -1){
   mkdir("/data/clarity", 0755);
-
+  }
    time_t curtime;
    struct tm *loc_time;
    curtime = time (NULL);
    loc_time = localtime (&curtime);
+   string time = asctime(loc_time);
+   int len;
+   len = strlen(time)
+   if(time[len] == '\n'){
+     time[len] = '\0';
+   }
    
    // Displaying date and time in standard format
    //printf("%s", asctime (loc_time));
@@ -2469,9 +2475,8 @@ void logEngineOn()
   
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   //fprintf(out, "%f,%f", odometer, tripDistance);
-  fprintf(out, "%s, EngineOn\n", asctime(loc_time));
+  printf(out, "On,"%s\n", time);
   fclose(out);
-  }
   
 }
 
