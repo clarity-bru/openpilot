@@ -2462,11 +2462,13 @@ void logEngineOn()
    struct tm *loc_time;
    curtime = time (NULL);
    loc_time = localtime (&curtime);
-   string time = asctime(loc_time);
+   /*
+   char time[] = asctime(loc_time);
    int len;
    len = strlen(time);
    if(time[len] == '\n'){
      time[len] = '\0';
+   */
    }
    
    // Displaying date and time in standard format
@@ -2475,7 +2477,7 @@ void logEngineOn()
 
   
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
-  //fprintf(out, "%f,%f", odometer, tripDistance);
+  //fprintf(out, "On,%f,%f,", odometer, tripDistance);
   printf(out, "On,"%s\n", time);
   fclose(out);
   
