@@ -1574,7 +1574,7 @@ static void bb_ui_draw_UI(UIState *s)
     bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
 
     //Code for loging (should be moved)
-    if(scene->odometer > 0){
+    if(scene->engineRPM > 0){
       if(isEngineOn == 0){
         logEngineOn();
         //logEngineON(s->scene.odometer, s->scene.tripDistance);
@@ -1582,7 +1582,7 @@ static void bb_ui_draw_UI(UIState *s)
       }
       isEngineOn = 1;
     }
-    if(scene->odometer < 1){
+    if(scene->engineRPM < 1){
       if(isEngineOn == 1){
         logEngineOff();
         //isEngineOn = 0;
@@ -2476,7 +2476,7 @@ void logEngineOn()
    
 
   
-  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
+  FILE *out = fopen("/data/clarity/engineLogOn.csv", "a");
   //fprintf(out, "On,%f,%f,", odometer, tripDistance);
   fprintf(out, "On,%s\n", asctime (loc_time));
   fclose(out);
@@ -2485,7 +2485,7 @@ void logEngineOn()
 
 void logEngineOff()
 {
-  FILE *out = fopen("/data/clarity/engineLogOFF.csv", "a");
+  FILE *out = fopen("/data/clarity/engineLogOff.csv", "a");
   fprintf(out, "EngineOff\n");
   fclose(out);
 }
