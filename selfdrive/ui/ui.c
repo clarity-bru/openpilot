@@ -1573,7 +1573,7 @@ static void bb_ui_draw_UI(UIState *s)
     bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
 
     //Code for loging (should be moved)
-    if(scene->odometer > 0){
+    if(scene->engineRPM> 0){
       if(isEngineOn == 0){
         logEngineOn();
         //logEngineON(s->scene.odometer, s->scene.tripDistance);
@@ -1581,7 +1581,7 @@ static void bb_ui_draw_UI(UIState *s)
       }
       isEngineOn = 1;
     }
-    if(scene->odometer < 1){
+    if(scene->engineRPM < 1){
       if(isEngineOn == 1){
         logEngineOff();
         isEngineOn = 0;
