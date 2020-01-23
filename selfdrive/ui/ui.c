@@ -212,7 +212,7 @@ typedef struct UIScene {
 } UIScene;
 
 
-bool isEngineOn = 0;
+bool isEngineOn = -1;
 void logEngineEvent(bool isEngineOn, int odometer);
 
 
@@ -1571,7 +1571,7 @@ static void bb_ui_draw_UI(UIState *s)
 
     //Code for loging (should be moved)
     if(scene->engineRPM > 0){
-      if(isEngineOn == 0){
+      if(isEngineOn < 1){
         logEngineEvent(isEngineOn, scene->odometer);
       }
       isEngineOn = 1;
@@ -1882,7 +1882,7 @@ static void ui_draw_vision_event(UIState *s) {
 
 static void ui_draw_vision_map(UIState *s) {
   const UIScene *scene = &s->scene;
-  const int map_size = 96;
+  const int map_size = 64;
   const int map_x = (scene->ui_viz_rx + (map_size * 3) + (bdr_is * 3));
   const int map_y = (footer_y + ((footer_h - map_size) / 2));
   const int map_img_size = (map_size * 1.5);
@@ -1909,7 +1909,7 @@ static void ui_draw_vision_map(UIState *s) {
 
 static void ui_draw_vision_face(UIState *s) {
   const UIScene *scene = &s->scene;
-  const int face_size = 96;
+  const int face_size = 64;
   const int face_x = (scene->ui_viz_rx + face_size + (bdr_is * 2));
   const int face_y = (footer_y + ((footer_h - face_size) / 2));
   const int face_img_size = (face_size * 1.5);
@@ -1934,7 +1934,7 @@ static void ui_draw_vision_face(UIState *s) {
 
 static void ui_draw_vision_brake(UIState *s) {
   const UIScene *scene = &s->scene;
-  const int brake_size = 96;
+  const int brake_size = 64;
   const int brake_x = (scene->ui_viz_rx + (brake_size * 5) + (bdr_is * 4));
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
