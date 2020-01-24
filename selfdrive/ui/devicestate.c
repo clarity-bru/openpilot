@@ -31,7 +31,7 @@ typedef struct DeviceState {
   int tetherOn;
   int logOn;
   int buttonsOn;
-  char mediaUsage[10];
+  char *mediaUsage;
 
   // internal
   int fdPwr, fdVol;
@@ -39,6 +39,7 @@ typedef struct DeviceState {
   time_t tx_time;
 } DeviceState;
 static DeviceState ds;
+char* getMediaUsage();
 
 void ds_getIPAddress(char *buffer)
 {
@@ -140,11 +141,11 @@ void ds_update(isStopped, isAwake) {
 }
 
 
-char *getMediaUsage(){
+char* getMediaUsage(){
   FILE *fp;
-  char line[10];
+  char *line;
   
-  fp = popen("du -hs /data/media/0/realdata | awk '{print $1}'")
+  fp = popen("du -hs /data/media/0/realdata | awk \'{print $1}\'", "r");
   
   fgets(line,sizeof line, fp);
   pclose(fp);
