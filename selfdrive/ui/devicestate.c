@@ -31,6 +31,7 @@ typedef struct DeviceState {
   int tetherOn;
   int logOn;
   int buttonsOn;
+  char mediaUsage[10];
 
   // internal
   int fdPwr, fdVol;
@@ -109,6 +110,7 @@ void ds_init() {
   ds.fdVol = ds_evt_init("/dev/input/event4");
   ds.tetherOn = 0;
   ds.logOn = 0;
+  ds.mediaUsage = "";
 }
 
 void ds_update(isStopped, isAwake) {
@@ -133,7 +135,22 @@ void ds_update(isStopped, isAwake) {
 
   if(isAwake && ds.stateVol==115) 
     toggleLog();
+
+  ds.mediaUsage = getMediaUsage();
 }
+
+
+char *getMediaUsage(){
+  FILE *fp;
+  char line[10];
+  
+  fp = popen("du -hs /data/media/0/realdata | awk '{print $1}'")
+  
+  fgets(line,sizeof line, fp);
+  pclose(fp);
+  return line;
+}
+
 
 char *_jsonstring(const char *js, jsmntok_t *token) {
   char *dst = malloc(token->end-token->start+1);
