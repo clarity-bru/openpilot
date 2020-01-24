@@ -2121,6 +2121,10 @@ static void ui_draw_blank(UIState *s) {
     char str[64];
     sprintf(str, "%d KB/s", ds.tx_throughput);
     nvgText(s->vg, 150, 217, str, NULL);
+    str = "";
+
+    sprintf(str, "%s", ds.mediaUsage);
+    nvgText(s->vg, 150, 187, str, NULL);
   }
 }
 
