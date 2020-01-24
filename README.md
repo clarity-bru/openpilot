@@ -13,7 +13,7 @@ Kegman-0.7-Clarity-v2
 4) A rudimentary engine log is in /data/clarity.  Logs when the engine switch on and off, and the odometer.  
 
 TODO: 
-1) Improve the engine log.  The goal was to track the number of hours and miles the combustion engine has covered.  I want to include the tripmeter in there, but trip_distance from the .dbc file cycles back to zero after 2.55 km. :(  
+1) Improve the engine log.  The goal was to track the number of hours and miles the combustion engine has covered.  I want to include the tripmeter in there, but trip_distance from the .dbc file, but it cycles back to zero after 2.55 km. :(  
 2) Add more values like engine temp, coolant temp, ambient temp, battery pack temp, etc to the log. 
 3) Add a compass
 4) Move the RPM indicator by the speed indicator and make it bigger?  Create a graphic?  Toggle engine RPM's visibility?
