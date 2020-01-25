@@ -1569,7 +1569,7 @@ static void bb_ui_draw_UI(UIState *s)
     bb_ui_draw_measures_right(s, bb_dml_x, bb_dml_y, bb_dml_w);
     bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
 
-    //Code for loging (should be moved)
+    //Code for logging (should be moved to another file?)
     if(scene->engineRPM > 0){
       if(isEngineOn == 0){
         isEngineOn = 1;
@@ -1889,7 +1889,7 @@ static void ui_draw_vision_map(UIState *s) {
   const int map_y = (footer_y + ((footer_h - map_size) / 2));
   const int map_img_size = (map_size * 1.5);
   const int map_img_x = (map_x - (map_img_size / 2));
-  const int map_img_y = (map_y - (map_size / 4) + 22);
+  const int map_img_y = (map_y - (map_size / 4) + 25);
 
   bool map_valid = s->scene.map_valid;
   float map_img_alpha = map_valid ? 1.0f : 0.15f;
@@ -1899,7 +1899,7 @@ static void ui_draw_vision_map(UIState *s) {
     map_img_size, map_img_size, 0, s->img_map, map_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, map_x, (map_y + (bdr_is * 1.5) + 22), map_size);
+  nvgCircle(s->vg, map_x, (map_y + (bdr_is * 1.5) + 25), map_size);
   nvgFillColor(s->vg, map_bg);
   nvgFill(s->vg);
 
@@ -1924,7 +1924,7 @@ static void ui_draw_vision_face(UIState *s) {
     face_img_size, face_img_size, 0, s->img_face, face_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, face_x, (face_y + (bdr_is * 1.5) + 22), face_size);
+  nvgCircle(s->vg, face_x, (face_y + (bdr_is * 1.5) + 25), face_size);
   nvgFillColor(s->vg, face_bg);
   nvgFill(s->vg);
 
@@ -1941,7 +1941,7 @@ static void ui_draw_vision_brake(UIState *s) {
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
-  const int brake_img_y = (brake_y - (brake_size / 4))+22;
+  const int brake_img_y = (brake_y - (brake_size / 4))+25;
 
   bool brake_valid = scene->brakeLights;
   float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
@@ -1951,7 +1951,7 @@ static void ui_draw_vision_brake(UIState *s) {
     brake_img_size, brake_img_size, 0, s->img_brake, brake_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, brake_x, (brake_y + (bdr_is * 1.5) + 22), brake_size);
+  nvgCircle(s->vg, brake_x, (brake_y + (bdr_is * 1.5) + 25), brake_size);
   nvgFillColor(s->vg, brake_bg);
   nvgFill(s->vg);
 
@@ -2120,7 +2120,7 @@ static void ui_draw_blank(UIState *s) {
     char str[64];
     sprintf(str, "%d KB/s", ds.tx_throughput);
     nvgText(s->vg, 150, 217, str, NULL);
-    nvgText(s->vg, 150, 160, ds.mediaUsage, NULL);
+    nvgText(s->vg, 150, 160, ds.logsDiskUsage, NULL);
   }
 }
 
@@ -2439,16 +2439,16 @@ void handle_message(UIState *s, void *which) {
   zmq_msg_close(&msg);
 }
 
-//void logEngineOn(float odometer, float tripDistance)
+
 void logEngineEvent(bool EngineOn, int odometer)
 {
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
   if(stat("/data/clarity", &st) == -1){
-  mkdir("/data/clarity", 0755);
-  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
-  fprintf(out, "EngineOn/Off,Odometer_km,DateTime\n");
-  fclose(out);
+    mkdir("/data/clarity", 0755);
+    FILE *out = fopen("/data/clarity/engineLog.csv", "a");
+    fprintf(out, "EngineOn/Off,Odometer_km,DateTime\n");
+    fclose(out);
   }
   
   //time
@@ -2460,9 +2460,9 @@ void logEngineEvent(bool EngineOn, int odometer)
   //Write info to log
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   if(EngineOn){
-  fprintf(out, "On ,%i,%s", odometer, asctime(loc_time));
+    fprintf(out, "On ,%i,%s", odometer, asctime(loc_time));
   }else{
-  fprintf(out, "Off,%i,%s", odometer, asctime(loc_time));
+    fprintf(out, "Off,%i,%s", odometer, asctime(loc_time));
   }
   fclose(out);
 }

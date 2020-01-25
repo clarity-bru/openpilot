@@ -32,7 +32,7 @@ typedef struct DeviceState {
   int tetherOn;
   int logOn;
   int buttonsOn;
-  char mediaUsage[16];
+  char logsDiskUsage[16];
 
   // internal
   int fdPwr, fdVol;
@@ -41,8 +41,29 @@ typedef struct DeviceState {
 } DeviceState;
 static DeviceState ds;
 
-//bruce
-void getMediaUsage(char *buffer);
+
+void getLogsDiskUsage(char *buffer){
+  FILE *fp;
+  const int LENGTH = 10;
+  char line[LENGTH];
+
+  //run linux command and filter via awk to get the disk space usage of logs 
+  fp = popen("du -hs /data/media/0/realdata | awk \'{print $1}\'", "r");
+  
+  //stores output of linux command into a char array
+  fgets(line, sizeof(line), fp);
+  pclose(fp);
+
+  //Removes weird white rectangle character
+  for(int i=0; i<LENGTH; i++){
+    if((isalnum(line[i]) == 0) && (ispunct(line[i]) == 0)){
+      line[i] = '\0';
+    }
+  }
+  
+  //Writes log disk space usage to buffer
+  sprintf(buffer, "%s", line);
+}
 
 void ds_getIPAddress(char *buffer)
 {
@@ -114,7 +135,7 @@ void ds_init() {
   ds.fdVol = ds_evt_init("/dev/input/event4");
   ds.tetherOn = 0;
   ds.logOn = 0;
-  getMediaUsage(ds.mediaUsage);
+  getLogsDiskUsage(ds.logsDiskUsage);
 }
 
 void ds_update(isStopped, isAwake) {
@@ -122,8 +143,8 @@ void ds_update(isStopped, isAwake) {
     // check once a second
     time_t current_time = time(NULL);
     if (current_time!=ds.tx_time) {
-      //update disk space
-      getMediaUsage(ds.mediaUsage);
+      //update logs' disk space usage
+      getLogsDiskUsage(ds.logsDiskUsage);
       // update ip address
       ds_getIPAddress(ds.ipAddress);
       // update throughput
@@ -141,36 +162,7 @@ void ds_update(isStopped, isAwake) {
 
   if(isAwake && ds.stateVol==115) 
     toggleLog();
-
 }
-
-
-void getMediaUsage(char *buffer){
-  FILE *fp;
-  const int LENGTH = 10;
-  char line[LENGTH];
-
-  //run linux command and parse via awk to get the disk space usage of logs 
-  fp = popen("du -hs /data/media/0/realdata | awk \'{print $1}\'", "r");
-  
-  //stores output of linux command into a char array
-  fgets(line, sizeof(line), fp);
-  pclose(fp);
-
-  //Removes weird white rectangle character
-  for(int i=0; i<LENGTH; i++){
-    if((isalnum(line[i]) == 0) && (ispunct(line[i]) == 0)){
-      line[i] = '\0';
-    }
-  }
-
-  sprintf(buffer, "%s", line);
-}
-
-
-
-
-
 
 char *_jsonstring(const char *js, jsmntok_t *token) {
   char *dst = malloc(token->end-token->start+1);
