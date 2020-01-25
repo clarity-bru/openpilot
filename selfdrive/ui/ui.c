@@ -1302,11 +1302,10 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       val_color = nvgRGBA(255, 0, 0, 200);
     }
 
-    //snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
-    snprintf(val_str, sizeof(val_str), "%i", isEngineOn);
+    snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
     snprintf(uom_str, sizeof(uom_str), "");
 
-    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "isEngineOn",
+    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
       bb_rx, bb_ry, bb_uom_dx,
       val_color, lab_color, uom_color,
       value_fontSize, label_fontSize, uom_fontSize );
@@ -1890,7 +1889,7 @@ static void ui_draw_vision_map(UIState *s) {
   const int map_y = (footer_y + ((footer_h - map_size) / 2));
   const int map_img_size = (map_size * 1.5);
   const int map_img_x = (map_x - (map_img_size / 2));
-  const int map_img_y = (map_y - (map_size / 4));
+  const int map_img_y = (map_y - (map_size / 4) + 22);
 
   bool map_valid = s->scene.map_valid;
   float map_img_alpha = map_valid ? 1.0f : 0.15f;
@@ -1900,7 +1899,7 @@ static void ui_draw_vision_map(UIState *s) {
     map_img_size, map_img_size, 0, s->img_map, map_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, map_x, (map_y + (bdr_is * 1.5)), map_size);
+  nvgCircle(s->vg, map_x, (map_y + (bdr_is * 1.5) + 22), map_size);
   nvgFillColor(s->vg, map_bg);
   nvgFill(s->vg);
 
@@ -1914,10 +1913,10 @@ static void ui_draw_vision_face(UIState *s) {
   const UIScene *scene = &s->scene;
   const int face_size = 88;
   const int face_x = (scene->ui_viz_rx + face_size + (bdr_is * 2));
-  const int face_y = (footer_y + ((footer_h - face_size) / 2))+20;
+  const int face_y = (footer_y + ((footer_h - face_size) / 2));
   const int face_img_size = (face_size * 1.5);
   const int face_img_x = (face_x - (face_img_size / 2));
-  const int face_img_y = (face_y - (face_size / 4))+20;
+  const int face_img_y = (face_y - (face_size / 4))+25;
   float face_img_alpha = scene->monitoring_active ? 1.0f : 0.15f;
   float face_bg_alpha = scene->monitoring_active ? 0.3f : 0.1f;
   NVGcolor face_bg = nvgRGBA(0, 0, 0, (255 * face_bg_alpha));
@@ -1925,7 +1924,7 @@ static void ui_draw_vision_face(UIState *s) {
     face_img_size, face_img_size, 0, s->img_face, face_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, face_x, (face_y + (bdr_is * 1.5)), face_size);
+  nvgCircle(s->vg, face_x, (face_y + (bdr_is * 1.5) + 22), face_size);
   nvgFillColor(s->vg, face_bg);
   nvgFill(s->vg);
 
@@ -1939,10 +1938,10 @@ static void ui_draw_vision_brake(UIState *s) {
   const UIScene *scene = &s->scene;
   const int brake_size = 88;
   const int brake_x = (scene->ui_viz_rx + (brake_size * 5) + (bdr_is * 4));
-  const int brake_y = (footer_y + ((footer_h - brake_size) / 2))+25;
+  const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
-  const int brake_img_y = (brake_y - (brake_size / 4))+25;
+  const int brake_img_y = (brake_y - (brake_size / 4))+22;
 
   bool brake_valid = scene->brakeLights;
   float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
@@ -1952,7 +1951,7 @@ static void ui_draw_vision_brake(UIState *s) {
     brake_img_size, brake_img_size, 0, s->img_brake, brake_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, brake_x, (brake_y + (bdr_is * 1.5)), brake_size);
+  nvgCircle(s->vg, brake_x, (brake_y + (bdr_is * 1.5) + 22), brake_size);
   nvgFillColor(s->vg, brake_bg);
   nvgFill(s->vg);
 
@@ -2121,9 +2120,7 @@ static void ui_draw_blank(UIState *s) {
     char str[64];
     sprintf(str, "%d KB/s", ds.tx_throughput);
     nvgText(s->vg, 150, 217, str, NULL);
-    memset(str, 0, sizeof str);
-    sprintf(str, "%s", ds.mediaUsage);
-    nvgText(s->vg, 150, 187, str, NULL);
+    nvgText(s->vg, 150, 160, ds.mediaUsage, NULL);
   }
 }
 

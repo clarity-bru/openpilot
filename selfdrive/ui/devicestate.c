@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <ctype.h> //for ispunct()
 #include <string.h> /* for strncpy */
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -31,7 +32,7 @@ typedef struct DeviceState {
   int tetherOn;
   int logOn;
   int buttonsOn;
-  char *mediaUsage;
+  char mediaUsage[16];
 
   // internal
   int fdPwr, fdVol;
@@ -39,7 +40,9 @@ typedef struct DeviceState {
   time_t tx_time;
 } DeviceState;
 static DeviceState ds;
-char* getMediaUsage();
+
+//bruce
+void getMediaUsage(char *buffer);
 
 void ds_getIPAddress(char *buffer)
 {
@@ -111,7 +114,7 @@ void ds_init() {
   ds.fdVol = ds_evt_init("/dev/input/event4");
   ds.tetherOn = 0;
   ds.logOn = 0;
-  ds.mediaUsage = "";
+  getMediaUsage(ds.mediaUsage);
 }
 
 void ds_update(isStopped, isAwake) {
@@ -119,6 +122,8 @@ void ds_update(isStopped, isAwake) {
     // check once a second
     time_t current_time = time(NULL);
     if (current_time!=ds.tx_time) {
+      //update disk space
+      getMediaUsage(ds.mediaUsage);
       // update ip address
       ds_getIPAddress(ds.ipAddress);
       // update throughput
@@ -137,20 +142,34 @@ void ds_update(isStopped, isAwake) {
   if(isAwake && ds.stateVol==115) 
     toggleLog();
 
-  ds.mediaUsage = getMediaUsage();
 }
 
 
-char* getMediaUsage(){
+void getMediaUsage(char *buffer){
   FILE *fp;
-  char *line;
-  
+  const int LENGTH = 10;
+  char line[LENGTH];
+
+  //run linux command and parse via awk to get the disk space usage of logs 
   fp = popen("du -hs /data/media/0/realdata | awk \'{print $1}\'", "r");
   
-  fgets(line,sizeof line, fp);
+  //stores output of linux command into a char array
+  fgets(line, sizeof(line), fp);
   pclose(fp);
-  return line;
+
+  //Removes weird white rectangle character
+  for(int i=0; i<LENGTH; i++){
+    if((isalnum(line[i]) == 0) && (ispunct(line[i]) == 0)){
+      line[i] = '\0';
+    }
+  }
+
+  sprintf(buffer, "%s", line);
 }
+
+
+
+
 
 
 char *_jsonstring(const char *js, jsmntok_t *token) {
