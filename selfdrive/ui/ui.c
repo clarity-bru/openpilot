@@ -212,8 +212,10 @@ typedef struct UIScene {
 } UIScene;
 
 
+//Clarity-bru
+int maxRPM = 0;
 bool isEngineOn = 0;
-void logEngineEvent(bool isEngineOn, int odometer);
+void logEngineEvent(bool isEngineOn, int odometer, int maxRPM);
 
 
 typedef struct {
@@ -1573,16 +1575,20 @@ static void bb_ui_draw_UI(UIState *s)
     if(scene->engineRPM > 0){
       if(isEngineOn == 0){
         isEngineOn = 1;
-        logEngineEvent(isEngineOn, scene->odometer);
+        logEngineEvent(isEngineOn, scene->odometer, 0);
+      }
+      if(scene->engineRPM > maxRPM){
+        maxRPM = scene->engineRPM;
       }
       isEngineOn = 1;
     }
     if(scene->engineRPM < 1){
       if(isEngineOn == 1){
         isEngineOn = 0;
-        logEngineEvent(isEngineOn, scene->odometer);
+        logEngineEvent(isEngineOn, scene->odometer, maxRPM);
       }
       isEngineOn = 0;
+      maxRPM = 0;
     }
 
 }
@@ -2440,7 +2446,7 @@ void handle_message(UIState *s, void *which) {
 }
 
 
-void logEngineEvent(bool EngineOn, int odometer)
+void logEngineEvent(bool EngineOn, int odometer, int maxRPM)
 {
   //Create Clarity folder if it doesn't exist
   struct stat st = {0};
@@ -2462,7 +2468,7 @@ void logEngineEvent(bool EngineOn, int odometer)
   if(EngineOn){
     fprintf(out, "On ,%i,%s", odometer, asctime(loc_time));
   }else{
-    fprintf(out, "Off,%i,%s", odometer, asctime(loc_time));
+    fprintf(out, "Off,%i,%i,%s", odometer, maxRPM, asctime(loc_time));
   }
   fclose(out);
 }
