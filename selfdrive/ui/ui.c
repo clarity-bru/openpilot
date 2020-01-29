@@ -7,7 +7,8 @@
 #include <sys/resource.h>
 #include <sys/types.h>//clarity-bru: files
 #include <sys/stat.h>//clarity-bru: files
-#include <time.h>//clariy-bru: time
+#include <time.h>//clarity-bru: time
+#inlcude <string.h>//clarity-bru: strcpy
 
 
 #include <cutils/properties.h>
@@ -2462,13 +2463,17 @@ void logEngineEvent(bool EngineOn, int odometer, int maxRPM)
   struct tm *loc_time;
   curtime = time (NULL);
   loc_time = localtime (&curtime);
+  char currentTime[25] = asctime(loc_time);
+  currentTime[24] = '\0';
 
   //Write info to log
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   if(EngineOn){
-    fprintf(out, "On ,%i,%s", odometer, asctime(loc_time));
+    //fprintf(out, "On ,%i,%s", odometer, asctime(loc_time));
+    fprintf(out, "On ,%s,%i", currentTime, odometer, );
   }else{
-    fprintf(out, "Off,%i,%i,%s", odometer, maxRPM, asctime(loc_time));
+    //fprintf(out, "Off,%i,%i,%s", odometer, maxRPM, asctime(loc_time));
+    fprintf(out, "Off,%s,%i,%i", currentTime, odometer, maxRPM);
   }
   fclose(out);
 }
