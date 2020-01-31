@@ -8,7 +8,7 @@
 #include <sys/types.h>//clarity-bru: files
 #include <sys/stat.h>//clarity-bru: files
 #include <time.h>//clarity-bru: time
-#inlcude <string.h>//clarity-bru: strcpy
+#include <string.h>//clarity-bru: strcpy
 
 
 #include <cutils/properties.h>
@@ -1305,10 +1305,12 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       val_color = nvgRGBA(255, 0, 0, 200);
     }
 
-    snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
+    snprintf(val_str, sizeof(val_str), "%d", maxRPM);
+    //snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
     snprintf(uom_str, sizeof(uom_str), "");
 
-    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
+    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "Highest RPM",
+    //bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
       bb_rx, bb_ry, bb_uom_dx,
       val_color, lab_color, uom_color,
       value_fontSize, label_fontSize, uom_fontSize );
@@ -1773,6 +1775,8 @@ static void ui_draw_vision_speedlimit(UIState *s) {
     nvgFontSize(s->vg, 42*2.5);
     nvgText(s->vg, viz_speedlim_x+viz_speedlim_w/2, viz_speedlim_y + (is_speedlim_valid ? 170 : 165), "-", NULL);
   }
+
+
 }
 
 static void ui_draw_vision_speed(UIState *s) {
@@ -1833,6 +1837,21 @@ static void ui_draw_vision_speed(UIState *s) {
   } else {
     nvgText(s->vg, viz_speed_x+viz_speed_w/2, 320, "mph", NULL);
   }
+
+  //uptime
+  nvgBeginPath(s->vg);
+  nvgFontFace(s->vg, "sans-bold");
+  nvgFontSize(s->vg, 40);
+  /*
+  uint64_t uptime = nanos_since_boot();
+  int upSec = 0;
+  upSec = (int)uptime/1000000000;
+  char *uptimeSec;
+  sprintf(uptimeSec, "%d", upSec);
+
+  nvgText(s->vg, 230, 30, uptimeSec, NULL);
+  */
+  nvgText(s->vg, 50, 30, "-=Bruce=-", NULL);
 }
 
 static void ui_draw_vision_event(UIState *s) {
@@ -2463,17 +2482,20 @@ void logEngineEvent(bool EngineOn, int odometer, int maxRPM)
   struct tm *loc_time;
   curtime = time (NULL);
   loc_time = localtime (&curtime);
-  char currentTime[25] = asctime(loc_time);
-  currentTime[24] = '\0';
+  char currentTime[sizeof(asctime(loc_time))] = "";
+  int timeSize = 25;
+  strncpy(currentTime, asctime(loc_time), timeSize);
+  //strncpy(currentTime, asctime(loc_time), timeSize);
+  currentTime[timeSize-1] = '\0';
 
   //Write info to log
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   if(EngineOn){
     //fprintf(out, "On ,%i,%s", odometer, asctime(loc_time));
-    fprintf(out, "On ,%s,%i", currentTime, odometer, );
+    fprintf(out, "On ,%s,%i\n", currentTime, odometer);
   }else{
     //fprintf(out, "Off,%i,%i,%s", odometer, maxRPM, asctime(loc_time));
-    fprintf(out, "Off,%s,%i,%i", currentTime, odometer, maxRPM);
+    fprintf(out, "Off,%s,%i,%i\n", currentTime, odometer, maxRPM);
   }
   fclose(out);
 }
