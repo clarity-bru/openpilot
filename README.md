@@ -2,28 +2,35 @@ This is a fork of kegman's branch.  His readme is below mine.
 
 
 TODO: 
-1) Improve the engine log.  The goal is to track the number of hours and miles the combustion engine covers.  I want to include the tripmeter in there, but trip_distance from the .dbc file will cycles back to zero after 2.55 km. :(  
-2) Add more values like engine temp, coolant temp, ambient temp, battery pack temp, etc. to the log. 
-3) Add a compass.  Replace the max speed indicator with a compass?  Include elevation?
-4) Display uptime of current drive
-5) Create a stop watch function
+1) Improve the engingeLog.csv.  The goal is to track the number of hours and miles the combustion engine covers.  I want to include the tripmeter in there, but trip_distance from the .dbc file will cycles back to zero after 2.55 km. :(  
+2) Add more values like engine temp, coolant temp, ambient temp, battery pack temp, etc. to engineLog.csv. 
+3) Add a compass.  Toogle with max speed indicator by touch.
+4) Create a stop watch function.
+5) Indicator for yaw, roll, pitch and elevation.
+6) Accelerometer bubble.
+
+Kegman-0.7-Clarity-v4
+1) All additions from Kegman-0.7-Clarity-v3 are included with this branch.
+2) engineLog.csv includes the highest RPM value for each period the engine is switched on.
+3) Included an "uptime" indicator to track the trip time of each drive.
+4) engingLog.csv has trip meter.
 
 Kegman-0.7-Clarity-v3
 1) All additions from Kegman-0.7-Clarity-v2 are included with this branch.
 2) Fixed DM, map, and brake icons' size and position to accomdated the RPM indicator
 3) Even quieter engage and disagage sounds.  Normalized -30 decibels.
-4) Added logger disk space usage indicator on the dashboard.  Appears when uploading drives to comma's servers like the transfer speed indicator.
+4) Added a disk space indicator on the dashboard, which displays the disk spaced used by the logs that get uploaded to comma.  It appears when uploading drives like the transfer speed indicator.
 5) Fixed bad logic for engineLog.csv
 
 Kegman-0.7-Clarity-v2
 1) All additions from Kegman-0.7-Clarity are included with this branch.
-2) Added engine RPM indicator.  It’s below the desired steering angle indicator.  It overlaps with the driver monitoring icon.  Fixing the overlap is a low priority.
+2) Added an engine RPM indicator.  It’s below the desired steering angle indicator.  It overlaps with the driver monitoring icon.  Fixing the overlap is a low priority.
 3) The openpilot engage and disengage sounds are much quieter.  Normalized -20 decibels
 4) A rudimentary engine log is in /data/clarity.  Logs when the engine switch on and off, and the odometer reading.  
 
 Kegman-0.7-Clarity
 1) The MPC track is less flashy.
-2) The warning message are now transparent, not orange.  It should be less distracting.
+2) The warning messages are now transparent, not orange.  It should be less distracting.
 3) Added battery level indicator, which is below the battery temp indicator.
 4) Boot up animation changed.
 

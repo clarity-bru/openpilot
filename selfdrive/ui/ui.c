@@ -1599,11 +1599,11 @@ static void bb_ui_draw_UI(UIState *s)
         isEngineOn = 1;
 
         //TripDistance
-        currentTripDistance = scene->tripDistance
+        currentTripDistance = scene->tripDistance;
         if(currentTripDistance < previousTripDistance){
           tripDistanceCycles++;
         }
-        previousTripDistance = currentTripDistance	
+        previousTripDistance = currentTripDistance;	
 
         logEngineEvent(isEngineOn, scene->odometer, scene->tripDistance, 0);
       }
@@ -2175,7 +2175,7 @@ static void ui_draw_blank(UIState *s) {
     char str[64];
     sprintf(str, "%d KB/s", ds.tx_throughput);
     nvgText(s->vg, 150, 217, str, NULL);
-    nvgText(s->vg, 150, 160, ds.logsDiskUsage, NULL);
+    nvgText(s->vg, 150, 160, ds.diskUsageOfLogs, NULL);
   }
 }
 
@@ -2522,7 +2522,7 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
   if(EngineOn){
     //Capture 2.7 KM cycles of the trip meter.
     engineOnOdometer = odometer;
-    engineOnTripDistance = tripDistance
+    engineOnTripDistance = tripDistance;
     
 
     
@@ -2531,10 +2531,10 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
   }else{ //EngineOff
     engineOffOdometer = odometer;
     engineOffTripDistance = tripDistance;
-    if(currentTripDistance > previousTripDistance){
+    if(currentTripDistance >= previousTripDistance){
       netTripDistance = (engineOnOdometer - engineOffOdometer) + (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
     }
-    else if{
+    else{
       netTripDistance = (engineOnOdometer - engineOffOdometer) + (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
     }
     
