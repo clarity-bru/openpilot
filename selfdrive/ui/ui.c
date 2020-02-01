@@ -1597,16 +1597,17 @@ static void bb_ui_draw_UI(UIState *s)
     if(scene->engineRPM > 0){
       if(isEngineOn == 0){
         isEngineOn = 1;
-
-        //TripDistance
-        currentTripDistance = scene->tripDistance;
-        if(currentTripDistance < previousTripDistance){
-          tripDistanceCycles++;
-        }
-        previousTripDistance = currentTripDistance;	
-
         logEngineEvent(isEngineOn, scene->odometer, scene->tripDistance, 0);
       }
+
+       //TripDistance
+       currentTripDistance = scene->tripDistance;
+      if(currentTripDistance < previousTripDistance){
+        tripDistanceCycles++;
+      }
+      previousTripDistance = currentTripDistance;
+
+      //Stores RPM
       if(scene->engineRPM > maxRPM){
         maxRPM = scene->engineRPM;
       }
@@ -2520,21 +2521,19 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
   //Write info to log
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   if(EngineOn){
-    //Capture 2.7 KM cycles of the trip meter.
+    //Captures the 2.7 kilometer cycle of the trip meter.
     engineOnOdometer = odometer;
     engineOnTripDistance = tripDistance;
-    
-
     
     fprintf(out, "On ,%s,%i\n", currentTime, odometer);
     
   }else{ //EngineOff
     engineOffOdometer = odometer;
     engineOffTripDistance = tripDistance;
-    if(currentTripDistance >= previousTripDistance){
+    if(currentTripDistance >= previousTripDistance){//Normal
       netTripDistance = (engineOnOdometer - engineOffOdometer) + (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
     }
-    else{
+    else{//Cycled
       netTripDistance = (engineOnOdometer - engineOffOdometer) + (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
     }
     
