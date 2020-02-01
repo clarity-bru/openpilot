@@ -32,7 +32,7 @@ typedef struct DeviceState {
   int tetherOn;
   int logOn;
   int buttonsOn;
-  char logsDiskUsage[16];
+  char diskUsageOfLogs[16];
 
   // internal
   int fdPwr, fdVol;
@@ -42,7 +42,7 @@ typedef struct DeviceState {
 static DeviceState ds;
 
 
-void getLogsDiskUsage(char *buffer){
+void getDiskUsageOfLogs(char *buffer){
   FILE *fp;
   const int LENGTH = 10;
   char line[LENGTH];
@@ -135,7 +135,7 @@ void ds_init() {
   ds.fdVol = ds_evt_init("/dev/input/event4");
   ds.tetherOn = 0;
   ds.logOn = 0;
-  getLogsDiskUsage(ds.logsDiskUsage);
+  getDiskUsageOfLogs(ds.diskUsageOfLogs);
 }
 
 void ds_update(isStopped, isAwake) {
@@ -144,7 +144,7 @@ void ds_update(isStopped, isAwake) {
     time_t current_time = time(NULL);
     if (current_time!=ds.tx_time) {
       //update logs' disk space usage
-      getLogsDiskUsage(ds.logsDiskUsage);
+      getDiskUsageOfLogs(ds.diskUsageOfLogs);
       // update ip address
       ds_getIPAddress(ds.ipAddress);
       // update throughput
