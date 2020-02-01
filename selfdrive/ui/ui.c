@@ -216,6 +216,8 @@ typedef struct UIScene {
 //Clarity-bru
 int maxRPM = 0;
 bool isEngineOn = 0;
+bool carStarted = 0;
+time_t carStartedTime;
 void logEngineEvent(bool isEngineOn, int odometer, int maxRPM);
 
 
@@ -1115,6 +1117,11 @@ static void ui_draw_world(UIState *s) {
     return;
   }
 
+  if(!carStarted){
+    carStarted = 1;
+    carStartedTime= time(NULL);
+  }
+
   if ((nanos_since_boot() - scene->model_ts) < 1000000000ULL) {
     // Draw lane edges and vision/mpc tracks
     ui_draw_vision_lanes(s);
@@ -1305,12 +1312,12 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       val_color = nvgRGBA(255, 0, 0, 200);
     }
 
-    snprintf(val_str, sizeof(val_str), "%d", maxRPM);
-    //snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
+    //snprintf(val_str, sizeof(val_str), "%d", maxRPM);
+    snprintf(val_str, sizeof(val_str), "%.0f%%", s->scene.freeSpace* 100);
     snprintf(uom_str, sizeof(uom_str), "");
 
-    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "Highest RPM",
-    //bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
+    //bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "Highest RPM",
+    bb_h +=bb_ui_draw_measure(s, val_str, uom_str, "FREE SPACE",
       bb_rx, bb_ry, bb_uom_dx,
       val_color, lab_color, uom_color,
       value_fontSize, label_fontSize, uom_fontSize );
@@ -1842,16 +1849,24 @@ static void ui_draw_vision_speed(UIState *s) {
   nvgBeginPath(s->vg);
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 40);
-  /*
-  uint64_t uptime = nanos_since_boot();
-  int upSec = 0;
-  upSec = (int)uptime/1000000000;
-  char *uptimeSec;
-  sprintf(uptimeSec, "%d", upSec);
 
-  nvgText(s->vg, 230, 30, uptimeSec, NULL);
-  */
-  nvgText(s->vg, 50, 30, "-=Bruce=-", NULL);
+  time_t currentTime = time(NULL);
+  time_t upTime = currentTime - carStartedTime;
+  //time_t upTime = carStartedTime - currentTime;
+
+
+  int seconds = upTime%60;
+  int minutes = (upTime/60)%60;
+  int hours = upTime/3600;
+
+  char upTimeStr[10] = "";
+  sprintf(upTimeStr, "%02i:%02i:%02i", hours, minutes, seconds); 
+  //sprintf(upTimeStr, "%02i:%02i:%02i", hours, minutes, seconds); 
+  upTimeStr[9] = '\0';
+
+
+  nvgText(s->vg, 130, 30, upTimeStr, NULL);
+  //nvgText(s->vg, 50, 30, "-=Bruce=-", NULL);
 }
 
 static void ui_draw_vision_event(UIState *s) {
@@ -2133,6 +2148,7 @@ static void ui_draw_vision(UIState *s) {
 }
 
 static void ui_draw_blank(UIState *s) {
+  carStarted = 0;//Reset the uptime for the drives
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
   // draw IP address
