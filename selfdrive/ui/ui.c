@@ -209,7 +209,7 @@ typedef struct UIScene {
   bool gps_planner_active;
   int odometer;
   int engineRPM;
-  int tripDistance;
+  float tripDistance;
 } UIScene;
 
 
@@ -220,6 +220,8 @@ int maxRPM = 0;
 bool isEngineOn = 0;
 bool driveStarted = 0;
 time_t driveStartedTime;
+int engineOnCount = 0;
+
 
 //TripDistance
 int  engineOnOdometer = 0;
@@ -1477,7 +1479,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char uom_str[4];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
     snprintf(val_str, sizeof(val_str), "%d", (s->scene.engineRPM));
-    snprintf(uom_str, sizeof(uom_str), "");
+    snprintf(uom_str, sizeof(uom_str), "%d", engineOnCount);
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ENG RPM",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
@@ -1597,6 +1599,7 @@ static void bb_ui_draw_UI(UIState *s)
     if(scene->engineRPM > 0){
       if(isEngineOn == 0){
         isEngineOn = 1;
+        engineOnCount++;
         logEngineEvent(isEngineOn, scene->odometer, scene->tripDistance, 0);
       }
 
@@ -1617,6 +1620,7 @@ static void bb_ui_draw_UI(UIState *s)
       if(isEngineOn == 1){
         isEngineOn = 0;
         logEngineEvent(isEngineOn, scene->odometer, scene->tripDistance,maxRPM);
+        previousTripDistance = 0;
       }
       isEngineOn = 0;
       maxRPM = 0;
@@ -1867,7 +1871,7 @@ static void ui_draw_vision_speed(UIState *s) {
   //uptime
   nvgBeginPath(s->vg);
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 40);
+  nvgFontSize(s->vg, 45);
 
   time_t currentTime = time(NULL);
   time_t upTime = currentTime - driveStartedTime;
@@ -1880,7 +1884,51 @@ static void ui_draw_vision_speed(UIState *s) {
   sprintf(upTimeStr, "%02i:%02i:%02i", hours, minutes, seconds); 
   upTimeStr[9] = '\0';
 
-  nvgText(s->vg, 130, 30, upTimeStr, NULL);
+  nvgText(s->vg, 145, 30, upTimeStr, NULL);
+  //Debuging.  Y-values should be 30 pixels apart
+  char buffer[20] = "";
+  nvgTextAlign(s->vg, NVG_ALIGN_LEFT| NVG_ALIGN_BASELINE);
+
+  nvgText(s->vg, 260, 20, "odometer:", NULL);
+  sprintf(buffer,"%i", scene->odometer);
+  buffer[7] = '\0';
+  nvgText(s->vg, 700, 50, buffer, NULL);
+
+  nvgText(s->vg, 260, 50, "tripDistance:", NULL);
+  sprintf(buffer,"%.2f", scene->tripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 50, buffer, NULL);
+
+  nvgText(s->vg, 260, 80, "engineOnTripDistance:", NULL);
+  sprintf(buffer,"%.2f", engineOnTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 80, buffer, NULL);
+
+  nvgText(s->vg, 260, 110, "engineOffTripDistance:", NULL);
+  sprintf(buffer,"%.2f", engineOffTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 110, buffer, NULL);
+
+  nvgText(s->vg, 260, 140, "currentTripDistance:", NULL);
+  sprintf(buffer,"%.2f", currentTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 140, buffer, NULL);
+
+  nvgText(s->vg, 260, 170, "previousTripDistance:", NULL);
+  sprintf(buffer,"%.2f", previousTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 170, buffer, NULL);
+
+  nvgText(s->vg, 260, 200, "tripDistanceCycles:", NULL);
+  sprintf(buffer,"%d", tripDistanceCycles);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 200, buffer, NULL);
+
+  nvgText(s->vg, 260, 230, "netTripDistance:", NULL);
+  sprintf(buffer,"%.2f", netTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 230, buffer, NULL);
+
 }
 
 static void ui_draw_vision_event(UIState *s) {
@@ -2503,7 +2551,7 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
   if(stat("/data/clarity", &st) == -1){
     mkdir("/data/clarity", 0755);
     FILE *out = fopen("/data/clarity/engineLog.csv", "a");
-    fprintf(out, "EngineOn/Off,Odometer_km,DateTime\n");
+    fprintf(out, "EngineOn/Off,DateTime,Odometer(km),Trip(km),maxRPM\n");
     fclose(out);
   }
   
@@ -2523,7 +2571,10 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
   if(EngineOn){
     //Captures the 2.7 kilometer cycle of the trip meter.
     engineOnOdometer = odometer;
-    engineOnTripDistance = tripDistance;
+
+    //Required Resets
+    tripDistanceCycles = 0;
+    previousTripDistance = 0;
     
     fprintf(out, "On ,%s,%i\n", currentTime, odometer);
     
@@ -2531,15 +2582,18 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
     engineOffOdometer = odometer;
     engineOffTripDistance = tripDistance;
     if(currentTripDistance >= previousTripDistance){//Normal
-      netTripDistance = (engineOnOdometer - engineOffOdometer) + (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
+      netTripDistance = (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
+      //netTripDistance = (engineOffOdometer - engineOnOdometer) + (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
     }
     else{//Cycled
-      netTripDistance = (engineOnOdometer - engineOffOdometer) + (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
+      netTripDistance = (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
+      //netTripDistance = (engineOffOdometer - engineOnOdometer) + (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
     }
-    
-    fprintf(out, "Off,%s,%i,%i,%.2f,\n", currentTime, odometer, maxRPM, netTripDistance);
+    fprintf(out, "Off,%s,%i,%.2f,%i\n", currentTime, odometer, netTripDistance, maxRPM);
+
   }
   fclose(out);
+  tripDistanceCycles = 0;
 }
 
 

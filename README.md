@@ -1,5 +1,7 @@
 This is a fork of kegman's branch.  His readme is below mine.
 
+Known issues:
+engineLog.csv does not log the engine off event if the engine is on when the car is turned off.
 
 TODO: 
 1) Improve the engingeLog.csv.  The goal is to track the number of hours and miles the combustion engine covers.  I want to include the tripmeter in there, but trip_distance from the .dbc file will cycles back to zero after 2.55 km. :(  
@@ -13,7 +15,8 @@ Kegman-0.7-Clarity-v4
 1) All additions from Kegman-0.7-Clarity-v3 are included with this branch.
 2) engineLog.csv includes the highest RPM value for each period the engine is switched on.
 3) Included an "uptime" indicator to track the trip time of each drive.
-4) engingLog.csv has trip meter.
+4) engingLog.csv now includes a trip meter.
+5) The number of times the engine switches on is displayed by the RPM inidcator.  Its value is rotated 90 degrees.
 
 Kegman-0.7-Clarity-v3
 1) All additions from Kegman-0.7-Clarity-v2 are included with this branch.
