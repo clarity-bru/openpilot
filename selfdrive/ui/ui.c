@@ -224,8 +224,6 @@ int engineOnCount = 0;
 
 
 //TripDistance
-int  engineOnOdometer = 0;
-int  engineOffOdometer = 0;
 float engineOnTripDistance = 0;
 float engineOffTripDistance = 0;
 
@@ -2591,7 +2589,6 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
   FILE *out = fopen("/data/clarity/engineLog.csv", "a");
   if(EngineOn){
     //Captures the 2.7 kilometer cycle of the trip meter.
-    engineOnOdometer = odometer;
     engineOnTripDistance = tripDistance;
 
     //Required Resets
@@ -2601,15 +2598,15 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
     fprintf(out, "On ,%s,%i\n", currentTime, odometer);
     
   }else{ //EngineOff
-    engineOffOdometer = odometer;
     engineOffTripDistance = tripDistance;
-    if(currentTripDistance >= previousTripDistance){//Normal
+
+    //Did not cycle.  So calcultaion is straight foward.
+    if(currentTripDistance >= previousTripDistance){
       netTripDistance = (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
-      //netTripDistance = (engineOffOdometer - engineOnOdometer) + (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
     }
-    else{//Cycled
+    //Did cycle.  So calculation accounts for the cycle.
+    else{
       netTripDistance = (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
-      //netTripDistance = (engineOffOdometer - engineOnOdometer) + (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
     }
     fprintf(out, "Off,%s,%i,%.2f,%i\n", currentTime, odometer, netTripDistance, maxRPM);
 
