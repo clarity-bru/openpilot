@@ -2,20 +2,20 @@ This is a fork of kegman's branch.  His readme is below mine.
 
 Known issues:
 engineLog.csv does not log the engine off event if the engine is on when the car is turned off.
-engineLog.csv records does not record local time.  
+engineLog.csv does not record local time.  It's looks like it's recording GMT time.
 
 TODO: 
-1) Add a compass.  Toogle with max speed indicator by touch?
-2) Create a stop watch function.
+1) Create a stop watch function.
+2) Add a compass.  Toogle with max speed indicator by touch?
 3) Indicator for yaw, roll, pitch and elevation.
 4) Accelerometer bubble.
 5) Add more values like engine temp, coolant temp, ambient temp, battery pack temp, etc. to engineLog.csv. 
 
 Kegman-0.7-Clarity-v4
 1) All additions from Kegman-0.7-Clarity-v3 are included with this branch.
-2) engineLog.csv includes the highest RPM value for each period the engine is switched on.
-3) Included an "uptime" indicator to track the trip time of each drive.
-4) engingLog.csv now includes a tracks the kilometers traveled when the engine is on.
+2) engineLog.csv includes the highest RPM value for each period where the engine is switched on.
+3) Includes an "uptime" indicator to track the time of each drive.  It's on the upper left corner.
+4) engingLog.csv now includes a the kilometers traveled when the engine is on.
 5) The number of times the engine switches on is displayed by the RPM inidcator.  Its value is rotated -90 degrees.
 
 Kegman-0.7-Clarity-v3

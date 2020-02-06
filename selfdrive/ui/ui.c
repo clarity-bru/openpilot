@@ -2591,7 +2591,7 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
     //Captures the 2.7 kilometer cycle of the trip meter.
     engineOnTripDistance = tripDistance;
 
-    //Required Resets
+    //Resets some variables
     tripDistanceCycles = 0;
     previousTripDistance = 0;
     
