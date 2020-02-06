@@ -1884,15 +1884,11 @@ static void ui_draw_vision_speed(UIState *s) {
   sprintf(upTimeStr, "%02i:%02i:%02i", hours, minutes, seconds); 
   upTimeStr[9] = '\0';
 
-  nvgText(s->vg, 145, 30, upTimeStr, NULL);
+  nvgText(s->vg, 145, 32, upTimeStr, NULL);
   //Debuging.  Y-values should be 30 pixels apart
+  /*
   char buffer[20] = "";
   nvgTextAlign(s->vg, NVG_ALIGN_LEFT| NVG_ALIGN_BASELINE);
-
-  nvgText(s->vg, 260, 20, "odometer:", NULL);
-  sprintf(buffer,"%i", scene->odometer);
-  buffer[7] = '\0';
-  nvgText(s->vg, 700, 50, buffer, NULL);
 
   nvgText(s->vg, 260, 50, "tripDistance:", NULL);
   sprintf(buffer,"%.2f", scene->tripDistance);
@@ -1909,25 +1905,37 @@ static void ui_draw_vision_speed(UIState *s) {
   buffer[4] = '\0';
   nvgText(s->vg, 700, 110, buffer, NULL);
 
-  nvgText(s->vg, 260, 140, "currentTripDistance:", NULL);
+  nvgText(s->vg, 260, 170, "currentTripDistance:", NULL);
   sprintf(buffer,"%.2f", currentTripDistance);
-  buffer[4] = '\0';
-  nvgText(s->vg, 700, 140, buffer, NULL);
-
-  nvgText(s->vg, 260, 170, "previousTripDistance:", NULL);
-  sprintf(buffer,"%.2f", previousTripDistance);
   buffer[4] = '\0';
   nvgText(s->vg, 700, 170, buffer, NULL);
 
-  nvgText(s->vg, 260, 200, "tripDistanceCycles:", NULL);
-  sprintf(buffer,"%d", tripDistanceCycles);
+  nvgText(s->vg, 260, 200, "previousTripDistance:", NULL);
+  sprintf(buffer,"%.2f", previousTripDistance);
   buffer[4] = '\0';
   nvgText(s->vg, 700, 200, buffer, NULL);
 
-  nvgText(s->vg, 260, 230, "netTripDistance:", NULL);
-  sprintf(buffer,"%.2f", netTripDistance);
+  nvgText(s->vg, 260, 230, "tripDistanceCycles:", NULL);
+  sprintf(buffer,"%d", tripDistanceCycles);
   buffer[4] = '\0';
   nvgText(s->vg, 700, 230, buffer, NULL);
+
+  nvgText(s->vg, 260, 290, "netTripDistance:", NULL);
+  sprintf(buffer,"%.2f", netTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 290, buffer, NULL);
+
+  nvgText(s->vg, 260, 320, "odometer:", NULL);
+  sprintf(buffer,"%i", scene->odometer);
+  buffer[7] = '\0';
+  nvgText(s->vg, 700, 320, buffer, NULL);
+
+  nvgText(s->vg, 260, 350, "odometer (.6211):", NULL);
+  sprintf(buffer,"%.2f", scene->odometer*.6211);
+  buffer[11] = '\0';
+  nvgText(s->vg, 700, 350, buffer, NULL);
+  */
+
 
 }
 
@@ -2209,8 +2217,21 @@ static void ui_draw_vision(UIState *s) {
   glDisable(GL_BLEND);
 }
 
+
+void resetTripDistanceVariables(){
+  driveStarted = 0;
+  engineOnTripDistance = 0;
+  engineOffTripDistance = 0;
+  currentTripDistance = 0;
+  previousTripDistance = 0;
+  netTripDistance = 0;
+  tripDistanceCycles = 0;
+}
+
 static void ui_draw_blank(UIState *s) {
-  driveStarted = 0;//Flag to reset the uptime for the drives
+  if(driveStarted){
+    resetTripDistanceVariables();
+  }
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
   // draw IP address
@@ -2571,6 +2592,7 @@ void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
   if(EngineOn){
     //Captures the 2.7 kilometer cycle of the trip meter.
     engineOnOdometer = odometer;
+    engineOnTripDistance = tripDistance;
 
     //Required Resets
     tripDistanceCycles = 0;
