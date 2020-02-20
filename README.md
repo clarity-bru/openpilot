@@ -1,17 +1,16 @@
 This is based on Kegman's 0.7.3-Clarity branch.  His readme is below mine.0
 
-
-kegman-0.7.2-Clarity-v1
+kegman-0.7.3-Clarity-v1
 1) Removed the green border.
 2) Green and orange messages are now transparent.
-3) Engine RPM indicator added 
+3) Engine RPM indicator added with engine activation counter.
 4) The engage and disengage sounds are normalized -30 decibels.
-5) Counter for the engine activations implemented
-6) engineLog.csv can be found in /data/clarity
-7) Uptime clock is at upper left corner.
-8) Indicator for the CPU temperature, battery temperature, and battery level is implmented.  It does not change color.
-9) Added gps precision and altitude indicators.
-10) Reduce length of warning message and boot message.
+5) engineLog.csv can be found in /data/clarity
+6) Uptime clock is at upper left corner.
+7) Indicator for the CPU temperature, battery temperature, and battery level is implmented.  It does not change color.
+8) Added gps precision and altitude indicators.
+9) Reduce length of warning message and ready message.
+10) Added a Clarity splash screen.  Run cd /data/openpilot/selfdrive/ui/spinner && make
 
 
 =========================================================
