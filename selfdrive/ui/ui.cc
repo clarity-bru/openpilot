@@ -465,7 +465,7 @@ void handle_message(UIState *s, Message * msg) {
     s->scene.altitudePhone = datad.altitude;
     s->scene.speedPhone = datad.speed;
     s->scene.bearingPhone = datad.bearing;
-    
+//Ublox
 } else if (eventd.which == cereal_Event_gpsLocationExternal) {
     struct cereal_GpsLocationData datad;
     cereal_read_GpsLocationData(&datad, eventd.gpsLocationExternal);
@@ -486,9 +486,6 @@ void handle_message(UIState *s, Message * msg) {
     struct cereal_CarState datad;
     cereal_read_CarState(&datad, eventd.carState);
     s->scene.brakeLights = datad.brakeLights;
-    s->scene.engineRPM = datad.engineRPM;
-    s->scene.odometer = datad.odometer;
-    s->scene.tripDistance = datad.tripDistance;
   }
   capn_free(&ctx);
 }
@@ -943,7 +940,6 @@ int main(int argc, char* argv[]) {
       ui_update(s);
       if(!s->vision_connected) {
         // Visiond process is just stopped, force a redraw to make screen blank again.
-
         ui_draw(s);
         glFinish();
         should_swap = true;
@@ -956,6 +952,7 @@ int main(int argc, char* argv[]) {
     if (touched == 1) {
       set_awake(s, true);
     }
+
 
     // manage wakefulness
     if (s->awake_timeout > 0) {

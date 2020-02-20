@@ -1,18 +1,17 @@
-This is based on Kegman's 0.7.2-Clarity branch.  His readme is below mine.0
-
-
-kegman-0.7.2-Clarity-v2
-1) Counter for the engine activations implemented
-2) engineLog.csv can be found in /data/clarity
-3) Uptime clock is at upper left conerner.
-4) Indicator for the CPU temperature, battery temperature, and battery level is implmented.  It does not change color.
+This is based on Kegman's 0.7.3-Clarity branch.  His readme is below mine.0
 
 
 kegman-0.7.2-Clarity-v1
 1) Removed the green border.
 2) Green and orange messages are now transparent.
-3) Engine RPM indicator added without overlap.
+3) Engine RPM indicator added 
 4) The engage and disengage sounds are normalized -30 decibels.
+5) Counter for the engine activations implemented
+6) engineLog.csv can be found in /data/clarity
+7) Uptime clock is at upper left corner.
+8) Indicator for the CPU temperature, battery temperature, and battery level is implmented.  It does not change color.
+9) Added gps precision and altitude indicators.
+10) Reduce length of warning message and boot message.
 
 
 =========================================================
@@ -36,7 +35,10 @@ Remember to manually flash panda after checking out.  cd /data/openpilot/panda/b
 
 <b>kegman</b> - this is the default branch
 
-<b>kegman-plusBoschGasPress</b> - this branch gives Honda Bosch users the ability to press the gas without disengaging OP for more "stock ACC"-like behaviour.  
+<b>kegman-BoschGasPress</b> - this branch gives Honda Bosch users the ability to press the gas without disengaging OP for more "stock ACC"-like behaviour.  
+
+
+* Thanks to @Clarity.bru and @wirelessnet2 for restoring the dashcam in 0.7.2
 
 
 Known bugs in 0.7.1:

@@ -159,8 +159,6 @@ typedef struct UIScene {
   float bearingUblox;
 } UIScene;
 
-//int engineOnCount = 0;
-
 typedef struct {
   float x, y;
 }vertex_data;

@@ -280,6 +280,7 @@ struct ThermalData {
   batteryVoltage @16 :Int32;
   usbOnline @12 :Bool;
   networkType @22 :NetworkType;
+  offroadPowerUsage @23 :UInt32;  # Power usage since going offroad in uWh
 
   fanSpeed @10 :UInt16;
   started @11 :Bool;
@@ -1432,6 +1433,7 @@ struct UbloxGnss {
     measurementReport @0 :MeasurementReport;
     ephemeris @1 :Ephemeris;
     ionoData @2 :IonoData;
+    hwStatus @3 :HwStatus;
   }
 
   struct MeasurementReport {
@@ -1555,8 +1557,29 @@ struct UbloxGnss {
     healthValid @5 :Bool;
     ionoCoeffsValid @6 :Bool;
   }
-}
 
+  struct HwStatus {
+    noisePerMS @0 :UInt16;
+    agcCnt @1 :UInt16;
+    aStatus @2 :AntennaSupervisorState;
+    aPower @3 :AntennaPowerStatus;
+    jamInd @4 :UInt8;
+
+    enum AntennaSupervisorState {
+      init @0;
+      dontknow @1;
+      ok @2;
+      short @3;
+      open @4;
+    }
+
+    enum AntennaPowerStatus {
+      off @0;
+      on @1;
+      dontknow @2;
+    }
+  }
+}
 
 struct Clocks {
   bootTimeNanos @0 :UInt64;
