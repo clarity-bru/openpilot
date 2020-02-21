@@ -667,7 +667,6 @@ static void ui_draw_vision_speed(UIState *s) {
 
   nvgText(s->vg, 145, 32, upTimeStr, NULL);
   //Debuging.  Y-values should be 30 pixels apart
-  /*
   
   char buffer[20] = "";
   nvgTextAlign(s->vg, NVG_ALIGN_LEFT| NVG_ALIGN_BASELINE);
@@ -682,16 +681,23 @@ static void ui_draw_vision_speed(UIState *s) {
   buffer[15] = '\0';
   nvgText(s->vg, 550, 80, buffer, NULL);
 
-  nvgText(s->vg, 260, 110, "speed:", NULL);
+  nvgText(s->vg, 260, 110, "speed m/s:", NULL);
   sprintf(buffer,"%.2f | %.2f", scene->speedPhone, scene->speedUblox );
   buffer[15] = '\0';
   nvgText(s->vg, 550, 110, buffer, NULL);
 
-  nvgText(s->vg, 260, 170, "bearing:", NULL);
+  nvgText(s->vg, 260, 140, "speed MPH:", NULL);
+  sprintf(buffer,"%.2f | %.2f", scene->speedPhone * 2.237, scene->speedUblox * 2.237);
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 140, buffer, NULL);
+
+
+  nvgText(s->vg, 260, 180, "bearing:", NULL);
   sprintf(buffer,"%.2f | %.2f", scene->bearingPhone, scene->bearingUblox );
   buffer[15] = '\0';
-  nvgText(s->vg, 550, 170, buffer, NULL);
+  nvgText(s->vg, 550, 180, buffer, NULL);
 
+  /*
   nvgText(s->vg, 260, 200, "previousTripDistance:", NULL);
   sprintf(buffer,"%.2f", previousTripDistance);
   buffer[4] = '\0';

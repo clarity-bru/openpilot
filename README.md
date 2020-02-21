@@ -1,4 +1,5 @@
-This is based on Kegman's 0.7.3-Clarity branch.  His readme is below mine.0
+This is based on Kegman's 0.7.3-Clarity branch.  His readme is below mine.
+I don't recommend my branch to people who are new to OpenPilot. My warning messages have been toned down.
 
 kegman-0.7.3-Clarity-v1
 1) Removed the green border.
@@ -7,10 +8,10 @@ kegman-0.7.3-Clarity-v1
 4) The engage and disengage sounds are normalized -30 decibels.
 5) engineLog.csv can be found in /data/clarity
 6) Uptime clock is at upper left corner.
-7) Indicator for the CPU temperature, battery temperature, and battery level is implmented.  It does not change color.
+7) Indicators for the CPU temp, battery temp, and battery level added.  It does not change color.
 8) Added gps precision and altitude indicators.
-9) Reduce length of warning message and ready message.
-10) Added a Clarity splash screen.  Run cd /data/openpilot/selfdrive/ui/spinner && make
+9) Reduce length of warning messages and the ready message after starting OpenPilot.
+10) Added a Clarity splash screen.  Run "cd /data/openpilot/selfdrive/ui/spinner && make" to get it.
 
 
 =========================================================
