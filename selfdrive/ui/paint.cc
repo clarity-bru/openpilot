@@ -691,6 +691,8 @@ static void ui_draw_vision_speed(UIState *s) {
     sprintf(direction,"%s", "W" );
   } else if ((scene->bearingUblox >= 292.5) && (scene->bearingUblox < 337.5)){
     sprintf(direction,"%s", "NW" );
+  } else {
+    sprintf(direction,"%s", "--" );
   } 
   
   direction[2] = '\0';
