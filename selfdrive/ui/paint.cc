@@ -38,7 +38,7 @@ bool isEngineOn = 0;
 int engineOnCount = 0;
 
 //compass
-char compassDirection[3] = "";
+char direction[3] = "";
 
 
 //End of clarity-bru
@@ -676,31 +676,31 @@ static void ui_draw_vision_speed(UIState *s) {
   
   //Compass
   if((scene->bearingUblox >= 337.5) && (scene->bearingUblox < 22.5)){
-    direction = "N";
+	sprintf(direction,"%s", "N" );
   } else if ((scene->bearingUblox >= 22.5) && (scene->bearingUblox < 67.5)){
-    direction = "NE";
+    sprintf(direction,"%s", "NE" );
   } else if ((scene->bearingUblox >= 67.5) && (scene->bearingUblox < 112.5)){
-    direction = "E";
+    sprintf(direction,"%s", "E" );
   } else if ((scene->bearingUblox >= 112.5) && (scene->bearingUblox < 157.5)){
-    direction = "SE";
+    sprintf(direction,"%s", "SE" );
   } else if ((scene->bearingUblox >= 157.5) && (scene->bearingUblox < 202.5)){
-    direction = "S";
+    sprintf(direction,"%s", "S" );
   } else if ((scene->bearingUblox >= 202.5) && (scene->bearingUblox < 247.5)){
-    direction = "SW";
+    sprintf(direction,"%s", "SW" );
   } else if ((scene->bearingUblox >= 247.5) && (scene->bearingUblox < 292.5)){
-    direction = "W";
+    sprintf(direction,"%s", "W" );
   } else if ((scene->bearingUblox >= 292.5) && (scene->bearingUblox < 337.5)){
-    direction = "NW";
+    sprintf(direction,"%s", "NW" );
   } 
   
-  direction[2] = "\0";
+  direction[2] = '\0';
   
   nvgBeginPath(s->vg);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   nvgFontFace(s->vg, "sans-regular");
   nvgFontSize(s->vg, 26*2);
   
-  nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 60, direction, NULL);
+  nvgText(s->vg, 720, 60, direction, NULL);
   
   //Debuging.  Y-values should be 30 pixels apart
   /*
