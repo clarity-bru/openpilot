@@ -1,6 +1,11 @@
 This is based on Kegman's 0.7.3-Clarity branch.  His readme is below mine.
 I don't recommend my branch to people who are new to OpenPilot. My warning messages have been toned down.
 
+
+kegman-0.7.3-Clarity-v2
+1)
+
+
 kegman-0.7.3-Clarity-v1
 1) Removed the green border.
 2) Green and orange messages are now transparent.
