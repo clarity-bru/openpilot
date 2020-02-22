@@ -674,41 +674,15 @@ static void ui_draw_vision_speed(UIState *s) {
   nvgText(s->vg, 145, 32, upTimeStr, NULL);
   
   
-  //Compass
-  if((scene->bearingUblox >= 337.5) && (scene->bearingUblox < 22.5)){
-	sprintf(direction,"%s", "N" );
-  } else if ((scene->bearingUblox >= 22.5) && (scene->bearingUblox < 67.5)){
-    sprintf(direction,"%s", "NE" );
-  } else if ((scene->bearingUblox >= 67.5) && (scene->bearingUblox < 112.5)){
-    sprintf(direction,"%s", "E" );
-  } else if ((scene->bearingUblox >= 112.5) && (scene->bearingUblox < 157.5)){
-    sprintf(direction,"%s", "SE" );
-  } else if ((scene->bearingUblox >= 157.5) && (scene->bearingUblox < 202.5)){
-    sprintf(direction,"%s", "S" );
-  } else if ((scene->bearingUblox >= 202.5) && (scene->bearingUblox < 247.5)){
-    sprintf(direction,"%s", "SW" );
-  } else if ((scene->bearingUblox >= 247.5) && (scene->bearingUblox < 292.5)){
-    sprintf(direction,"%s", "W" );
-  } else if ((scene->bearingUblox >= 292.5) && (scene->bearingUblox < 337.5)){
-    sprintf(direction,"%s", "NW" );
-  } else {
-    sprintf(direction,"%s", "--" );
-  } 
-  
-  direction[2] = '\0';
-  
-  nvgBeginPath(s->vg);
-  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-  nvgFontFace(s->vg, "sans-regular");
-  nvgFontSize(s->vg, 26*2);
-  
-  nvgText(s->vg, 720, 60, direction, NULL);
-  
   //Debuging.  Y-values should be 30 pixels apart
-  /*
   
   char buffer[20] = "";
-  nvgTextAlign(s->vg, NVG_ALIGN_LEFT| NVG_ALIGN_BASELINE);
+  //nvgBeginPath(s->vg);
+  nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
+  nvgFontFace(s->vg, "sans-regular");
+  nvgFontSize(s->vg, 50);
+  //nvgText(s->vg, 145, 32, ".", NULL);//offset from uptime()
+
 
   nvgText(s->vg, 260, 50, "gpsAcurracy:", NULL);
   sprintf(buffer,"%.2f | %.2f", scene->gpsAccuracyPhone, scene->gpsAccuracyUblox );
@@ -737,7 +711,7 @@ static void ui_draw_vision_speed(UIState *s) {
   nvgText(s->vg, 550, 180, buffer, NULL);
   
 
-
+  /*
 
   nvgText(s->vg, 260, 200, "previousTripDistance:", NULL);
   sprintf(buffer,"%.2f", previousTripDistance);
@@ -766,7 +740,34 @@ static void ui_draw_vision_speed(UIState *s) {
   */
   
   
+  //Compass
+  if((scene->bearingUblox >= 337.5) || (scene->bearingUblox < 22.5)){
+	sprintf(direction,"%s", "N" );
+  } else if ((scene->bearingUblox >= 22.5) && (scene->bearingUblox < 67.5)){
+    sprintf(direction,"%s", "NE" );
+  } else if ((scene->bearingUblox >= 67.5) && (scene->bearingUblox < 112.5)){
+    sprintf(direction,"%s", "E" );
+  } else if ((scene->bearingUblox >= 112.5) && (scene->bearingUblox < 157.5)){
+    sprintf(direction,"%s", "SE" );
+  } else if ((scene->bearingUblox >= 157.5) && (scene->bearingUblox < 202.5)){
+    sprintf(direction,"%s", "S" );
+  } else if ((scene->bearingUblox >= 202.5) && (scene->bearingUblox < 247.5)){
+    sprintf(direction,"%s", "SW" );
+  } else if ((scene->bearingUblox >= 247.5) && (scene->bearingUblox < 292.5)){
+    sprintf(direction,"%s", "W" );
+  } else if ((scene->bearingUblox >= 292.5) && (scene->bearingUblox < 337.5)){
+    sprintf(direction,"%s", "NW" );
+  } else {
+    sprintf(direction,"%s", "--" );
+  } 
   
+  nvgBeginPath(s->vg);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
+  nvgFontFace(s->vg, "sans-regular");
+  nvgFontSize(s->vg, 100);
+  
+  direction[2] = '\0';
+  nvgText(s->vg, viz_speed_x+viz_speed_w/2, 70, direction, NULL);
 }
 
 static void ui_draw_vision_event(UIState *s) {

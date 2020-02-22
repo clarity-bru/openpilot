@@ -3,7 +3,7 @@ I don't recommend my branch to people who are new to OpenPilot. My warning messa
 
 
 kegman-0.7.3-Clarity-v2
-1)
+1)Added Compass.
 
 
 kegman-0.7.3-Clarity-v1
@@ -16,7 +16,7 @@ kegman-0.7.3-Clarity-v1
 7) Indicators for the CPU temp, battery temp, and battery level added.  It does not change color.
 8) Added gps precision and altitude indicators.
 9) Reduced length of warning messages and the ready message after starting OpenPilot.
-10) Added a Clarity splash screen.  Run "cd /data/openpilot/selfdrive/ui/spinner && make" and you will see it on the next reboot.
+10) Added a Clarity splash screen for booting.  To see it run "cd /data/openpilot/selfdrive/ui/spinner && make" and you will see it on the next reboot.
 
 
 =========================================================
