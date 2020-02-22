@@ -10,8 +10,8 @@ kegman-0.7.3-Clarity-v1
 6) Uptime clock is at upper left corner.
 7) Indicators for the CPU temp, battery temp, and battery level added.  It does not change color.
 8) Added gps precision and altitude indicators.
-9) Reduce length of warning messages and the ready message after starting OpenPilot.
-10) Added a Clarity splash screen.  Run "cd /data/openpilot/selfdrive/ui/spinner && make" to get it.
+9) Reduced length of warning messages and the ready message after starting OpenPilot.
+10) Added a Clarity splash screen.  Run "cd /data/openpilot/selfdrive/ui/spinner && make" and you will see it on the next reboot.
 
 
 =========================================================
