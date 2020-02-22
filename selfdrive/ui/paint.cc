@@ -37,6 +37,12 @@ int maxRPM = 0;
 bool isEngineOn = 0;
 int engineOnCount = 0;
 
+//compass
+char compassDirection[3] = "";
+
+
+//End of clarity-bru
+
 
 // TODO: this is also hardcoded in common/transformations/camera.py
 const mat3 intrinsic_matrix = (mat3){{
@@ -666,6 +672,36 @@ static void ui_draw_vision_speed(UIState *s) {
   upTimeStr[9] = '\0';
 
   nvgText(s->vg, 145, 32, upTimeStr, NULL);
+  
+  
+  //Compass
+  if((scene->bearingUblox >= 337.5) && (scene->bearingUblox < 22.5)){
+    direction = "N";
+  } else if ((scene->bearingUblox >= 22.5) && (scene->bearingUblox < 67.5)){
+    direction = "NE";
+  } else if ((scene->bearingUblox >= 67.5) && (scene->bearingUblox < 112.5)){
+    direction = "E";
+  } else if ((scene->bearingUblox >= 112.5) && (scene->bearingUblox < 157.5)){
+    direction = "SE";
+  } else if ((scene->bearingUblox >= 157.5) && (scene->bearingUblox < 202.5)){
+    direction = "S";
+  } else if ((scene->bearingUblox >= 202.5) && (scene->bearingUblox < 247.5)){
+    direction = "SW";
+  } else if ((scene->bearingUblox >= 247.5) && (scene->bearingUblox < 292.5)){
+    direction = "W";
+  } else if ((scene->bearingUblox >= 292.5) && (scene->bearingUblox < 337.5)){
+    direction = "NW";
+  } 
+  
+  direction[2] = "\0";
+  
+  nvgBeginPath(s->vg);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
+  nvgFontFace(s->vg, "sans-regular");
+  nvgFontSize(s->vg, 26*2);
+  
+  nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 60, direction, NULL);
+  
   //Debuging.  Y-values should be 30 pixels apart
   /*
   
