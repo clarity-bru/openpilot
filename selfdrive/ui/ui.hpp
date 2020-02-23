@@ -141,6 +141,8 @@ typedef struct UIScene {
   float angleSteersDes;
   float pa0;
   float freeSpace;
+  bool steerOverride;
+  float output_scale;
   
   //clarity-bru
   int odometer;
