@@ -282,7 +282,8 @@ const UIScene *scene = &s->scene;
       int green_lvl = fmin(255, 510-torque_scale);
       int alpha_lvl= fmin(255, 510-torque_scale);
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-      nvgRGBA(clr[0], clr[1], clr[2], 30), nvgRGBA(clr[0], clr[1], clr[2], 10));
+      nvgRGBA(100, 100, 100, 120), nvgRGBA(100, 100, 100, 60));
+      //nvgRGBA(clr[0], clr[1], clr[2], 80), nvgRGBA(clr[0], clr[1], clr[2], 10));
       /*
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
         nvgRGBA(          red_lvl,            green_lvl,  0, 255),
@@ -738,10 +739,10 @@ static void ui_draw_vision_speed(UIState *s) {
   buffer[15] = '\0';
   nvgText(s->vg, 550, 180, buffer, NULL);
 
-  nvgText(s->vg, 260, 210, "output_scale:", NULL);
+  nvgText(s->vg, 260, 220, "output_scale:", NULL);
   sprintf(buffer,"%.3f", scene->output_scale);
   buffer[15] = '\0';
-  nvgText(s->vg, 550, 2100, buffer, NULL);
+  nvgText(s->vg, 550, 220, buffer, NULL);
   
   
 
