@@ -276,12 +276,18 @@ const UIScene *scene = &s->scene;
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
         nvgRGBA(0, 191, 255, 255), nvgRGBA(0, 95, 128, 50));
     } else {
+      const uint8_t *clr = bg_colors[s->status];
       int torque_scale = (int)fabs(510*(float)s->scene.output_scale);
       int red_lvl = fmin(255, torque_scale);
       int green_lvl = fmin(255, 510-torque_scale);
+      int alpha_lvl= fmin(255, 510-torque_scale);
+      track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
+      nvgRGBA(clr[0], clr[1], clr[2], 30), nvgRGBA(clr[0], clr[1], clr[2], 10));
+      /*
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
         nvgRGBA(          red_lvl,            green_lvl,  0, 255),
         nvgRGBA((int)(0.5*red_lvl), (int)(0.5*green_lvl), 0, 50));
+      */
     }
   } else {
     // Draw white vision track
@@ -731,6 +737,12 @@ static void ui_draw_vision_speed(UIState *s) {
   sprintf(buffer,"%.2f | %.2f", scene->bearingPhone, scene->bearingUblox );
   buffer[15] = '\0';
   nvgText(s->vg, 550, 180, buffer, NULL);
+
+  nvgText(s->vg, 260, 210, "output_scale:", NULL);
+  sprintf(buffer,"%.3f", scene->output_scale);
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 2100, buffer, NULL);
+  
   
 
   /*
