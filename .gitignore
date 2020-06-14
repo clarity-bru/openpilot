@@ -18,7 +18,6 @@ a.out
 *.tmp
 *.o
 *.os
-*.so
 *.a
 *.clb
 *.class
