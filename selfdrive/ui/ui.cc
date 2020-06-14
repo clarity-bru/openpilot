@@ -485,11 +485,14 @@ void handle_message(UIState *s, SubMaster &sm) {
     s->scene.brakeLights = data.getBrakeLights();
     s->scene.engineRPM = data.getEngineRPM();
     s->scene.aEgo = data.getAEgo();
+    s->scene.odometer = data.getOdometer();
+    s->scene.tripDistance = data.getTripDistance();
     s->scene.steeringTorqueEps = data.getSteeringTorqueEps();
   } else if (sm.updated("gpsLocationExternal")) {
     auto data = sm["gpsLocationExternal"].getGpsLocationExternal();
     s->scene.gpsAccuracyUblox = data.getAccuracy();
     s->scene.altitudeUblox = data.getAltitude();
+	s->scene.bearingUblox = data.getBearing();
   }
 
   s->started = s->thermal_started || s->preview_started ;
@@ -590,8 +593,8 @@ static void ui_update(UIState *s) {
 
     s->scene.uilayout_sidebarcollapsed = true;
     update_offroad_layout_state(s);
-    s->scene.ui_viz_rx = (box_x-sbr_w+bdr_is*2);
-    s->scene.ui_viz_rw = (box_w+sbr_w-(bdr_is*2));
+    s->scene.ui_viz_rx = (box_x-sbr_w+bdr_s*2);
+    s->scene.ui_viz_rw = (box_w+sbr_w-(bdr_s*2));
     s->scene.ui_viz_ro = 0;
 
     s->vision_connect_firstrun = false;
@@ -893,9 +896,9 @@ int main(int argc, char* argv[]) {
 
     // resize vision for collapsing sidebar
     const bool hasSidebar = !s->scene.uilayout_sidebarcollapsed;
-    s->scene.ui_viz_rx = hasSidebar ? box_x : (box_x - sbr_w + (bdr_is * 2));
-    s->scene.ui_viz_rw = hasSidebar ? box_w : (box_w + sbr_w - (bdr_is * 2));
-    s->scene.ui_viz_ro = hasSidebar ? -(sbr_w - 6 * bdr_is) : 0;
+    s->scene.ui_viz_rx = hasSidebar ? box_x : (box_x - sbr_w + (bdr_s * 2));
+    s->scene.ui_viz_rw = hasSidebar ? box_w : (box_w + sbr_w - (bdr_s * 2));
+    s->scene.ui_viz_ro = hasSidebar ? -(sbr_w - 6 * bdr_s) : 0;
 
     // poll for touch events
     int touch_x = -1, touch_y = -1;

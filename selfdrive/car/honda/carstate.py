@@ -24,6 +24,8 @@ def get_can_signals(CP):
   signals = [
       ("XMISSION_SPEED", "ENGINE_DATA", 0),
       ("ENGINE_RPM", "POWERTRAIN_DATA", 0),
+      ("ODOMETER", "XXX_27", 0),
+      ("ODOMETER", "ENGINE_DATA", 0),
       ("WHEEL_SPEED_FL", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_FR", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_RL", "WHEEL_SPEEDS", 0),
@@ -180,6 +182,8 @@ class CarState(CarStateBase):
     self.lead_distance = 255
     self.hud_lead = 0
     self.engineRPM = 0
+    self.odometer = 0
+    self.tripDistance = 0
     self.gas_has_been_pressed_since_cruise_off = False
     self.pcm_acc_status_prev = False
     self.openpilotEngagedWithGasDepressed = False
@@ -246,6 +250,8 @@ class CarState(CarStateBase):
     ret.rightBlinker = cp.vl["SCM_FEEDBACK"]['RIGHT_BLINKER'] != 0
     self.brake_hold = cp.vl["VSA_STATUS"]['BRAKE_HOLD_ACTIVE']
     self.engineRPM = cp.vl["POWERTRAIN_DATA"]['ENGINE_RPM']
+    self.odometer = cp.vl["XXX_27"]['ODOMETER']
+    self.tripDistance = cp.vl["ENGINE_DATA"]['ODOMETER']
 
     if self.CP.carFingerprint in (CAR.CIVIC, CAR.ODYSSEY, CAR.CRV_5G, CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.CIVIC_BOSCH_DIESEL, CAR.CRV_HYBRID, CAR.INSIGHT, CAR.CLARITY): #Clarity
       self.park_brake = cp.vl["EPB_STATUS"]['EPB_STATE'] != 0

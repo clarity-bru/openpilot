@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>//clarity-bru: time
 #include <string.h>
 #include <unistd.h>
 #include "ui.hpp"
@@ -19,6 +20,30 @@ extern "C"{
 }
 
 int border_shifter = 20; //Use this to move elements around depending on how much bdr_s is changed -wirelessnet2
+////Clarity-bru
+//uptime
+time_t driveStartedTime;
+bool driveStarted = 0;
+
+//TripDistance
+float engineOnTripDistance = 0;
+float engineOffTripDistance = 0;
+float currentTripDistance = 0;
+float previousTripDistance = 0;
+int tripDistanceCycles = 0;
+float netTripDistance = 0;
+
+//engine stuff
+void logEngineEvent(bool isEngineOn, int odometer, float tripDistance, int maxRPM);
+int maxRPM = 0;
+bool isEngineOn = 0;
+int engineOnCount = 0;
+
+//compass
+char direction[3] = "";
+
+
+//End of clarity-bru
 
 // TODO: this is also hardcoded in common/transformations/camera.py
 const mat3 intrinsic_matrix = (mat3){{
@@ -30,8 +55,8 @@ const mat3 intrinsic_matrix = (mat3){{
 const uint8_t alert_colors[][4] = {
   [STATUS_STOPPED] = {0x07, 0x23, 0x39, 0xf1},
   [STATUS_DISENGAGED] = {0x17, 0x33, 0x49, 0xc8},
-  [STATUS_ENGAGED] = {0x17, 0x86, 0x44, 0xf1},
-  [STATUS_WARNING] = {0xDA, 0x6F, 0x25, 0xf1},
+  [STATUS_ENGAGED] = {0x17, 0x86, 0x44, 0x01},
+  [STATUS_WARNING] = {0xDA, 0x6F, 0x25, 0x01},
   [STATUS_ALERT] = {0xC9, 0x22, 0x31, 0xf1},
 };
 
@@ -239,17 +264,16 @@ static void ui_draw_track(UIState *s, bool is_mpc, track_vertices_data *pvd) {
 
   NVGpaint track_bg;
   if (is_mpc) {
-    // Draw colored MPC track Kegman's
+    // Draw grey colored MPC track
     if (s->scene.steerOverride) {
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-        nvgRGBA(0, 191, 255, 255), nvgRGBA(0, 95, 128, 50));
+        nvgRGBA(100, 100, 100, 150), nvgRGBA(100, 100, 100, 60));
     } else {
       int torque_scale = (int)fabs(510*(float)s->scene.output_scale);
       int red_lvl = fmin(255, torque_scale);
       int green_lvl = fmin(255, 510-torque_scale);
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-        nvgRGBA(          red_lvl,            green_lvl,  0, 255),
-        nvgRGBA((int)(0.5*red_lvl), (int)(0.5*green_lvl), 0, 50));
+        nvgRGBA(100, 100, 100, 100), nvgRGBA(100, 100, 100, 60));
     }
   } else {
     // Draw white vision track
@@ -404,7 +428,10 @@ static void ui_draw_world(UIState *s) {
   if (!scene->world_objects_visible) {
     return;
   }
-
+  if(!driveStarted){
+    driveStarted = 1;
+    driveStartedTime= time(NULL);
+  }
   const int inner_height = viz_w*9/16;
   const int ui_viz_rx = scene->ui_viz_rx;
   const int ui_viz_rw = scene->ui_viz_rw;
@@ -566,6 +593,125 @@ static void ui_draw_vision_speed(UIState *s) {
   snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 240, speed_str, 96*2.5, COLOR_WHITE, s->font_sans_bold);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"kph":"mph", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+  //uptime
+  nvgBeginPath(s->vg);
+  nvgFontFace(s->vg, "sans-bold");
+  nvgFontSize(s->vg, 45);
+
+  time_t currentTime = time(NULL);
+  time_t upTime = currentTime - driveStartedTime;
+
+  int seconds = upTime%60;
+  int minutes = (upTime/60)%60;
+  int hours = upTime/3600;
+
+  char upTimeStr[10] = "";
+  sprintf(upTimeStr, "%02i:%02i:%02i", hours, minutes, seconds); 
+  upTimeStr[9] = '\0';
+
+  nvgText(s->vg, 145, 32, upTimeStr, NULL);
+  
+  
+  //Debuging.  Y-values should be 30 pixels apart
+  
+  char buffer[20] = "";
+  //nvgBeginPath(s->vg);
+  nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
+  nvgFontFace(s->vg, "sans-regular");
+  nvgFontSize(s->vg, 50);
+  //nvgText(s->vg, 145, 32, ".", NULL);//offset from uptime()
+
+  /*
+  nvgText(s->vg, 260, 50, "gpsAcurracy:", NULL);
+  sprintf(buffer,"%.2f | %.2f", scene->gpsAccuracyPhone, scene->gpsAccuracyUblox );
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 50, buffer, NULL);
+
+  nvgText(s->vg, 260, 80, "altitude:", NULL);
+  sprintf(buffer,"%.2f | %.2f", scene->altitudePhone, scene->altitudeUblox );
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 80, buffer, NULL);
+
+  nvgText(s->vg, 260, 110, "speed m/s:", NULL);
+  sprintf(buffer,"%.2f | %.2f", scene->speedPhone, scene->speedUblox );
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 110, buffer, NULL);
+
+  nvgText(s->vg, 260, 140, "speed MPH:", NULL);
+  sprintf(buffer,"%.2f | %.2f", scene->speedPhone * 2.237, scene->speedUblox * 2.237);
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 140, buffer, NULL);
+
+
+  nvgText(s->vg, 260, 180, "bearing:", NULL);
+  sprintf(buffer,"%.2f | %.2f", scene->bearingPhone, scene->bearingUblox );
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 180, buffer, NULL);
+
+  nvgText(s->vg, 260, 220, "output_scale:", NULL);
+  sprintf(buffer,"%.3f", scene->output_scale);
+  buffer[15] = '\0';
+  nvgText(s->vg, 550, 220, buffer, NULL);
+  
+  
+
+
+
+  nvgText(s->vg, 260, 200, "previousTripDistance:", NULL);
+  sprintf(buffer,"%.2f", previousTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 200, buffer, NULL);
+
+  nvgText(s->vg, 260, 230, "tripDistanceCycles:", NULL);
+  sprintf(buffer,"%d", tripDistanceCycles);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 230, buffer, NULL);
+
+  nvgText(s->vg, 260, 290, "netTripDistance:", NULL);
+  sprintf(buffer,"%.2f", netTripDistance);
+  buffer[4] = '\0';
+  nvgText(s->vg, 700, 290, buffer, NULL);
+
+  nvgText(s->vg, 260, 320, "odometer:", NULL);
+  sprintf(buffer,"%i", scene->odometer);
+  buffer[7] = '\0';
+  nvgText(s->vg, 700, 320, buffer, NULL);
+
+  nvgText(s->vg, 260, 350, "odometer (.6211):", NULL);
+  sprintf(buffer,"%.2f", scene->odometer*.6211);
+  buffer[11] = '\0';
+  nvgText(s->vg, 700, 350, buffer, NULL);
+  */
+  
+  
+  //Compass
+  if((scene->bearingUblox >= 337.5) || (scene->bearingUblox < 22.5)){
+	sprintf(direction,"%s", "N" );
+  } else if ((scene->bearingUblox >= 22.5) && (scene->bearingUblox < 67.5)){
+    sprintf(direction,"%s", "NE" );
+  } else if ((scene->bearingUblox >= 67.5) && (scene->bearingUblox < 112.5)){
+    sprintf(direction,"%s", "E" );
+  } else if ((scene->bearingUblox >= 112.5) && (scene->bearingUblox < 157.5)){
+    sprintf(direction,"%s", "SE" );
+  } else if ((scene->bearingUblox >= 157.5) && (scene->bearingUblox < 202.5)){
+    sprintf(direction,"%s", "S" );
+  } else if ((scene->bearingUblox >= 202.5) && (scene->bearingUblox < 247.5)){
+    sprintf(direction,"%s", "SW" );
+  } else if ((scene->bearingUblox >= 247.5) && (scene->bearingUblox < 292.5)){
+    sprintf(direction,"%s", "W" );
+  } else if ((scene->bearingUblox >= 292.5) && (scene->bearingUblox < 337.5)){
+    sprintf(direction,"%s", "NW" );
+  } else {
+    sprintf(direction,"%s", "--" );
+  } 
+  
+  nvgBeginPath(s->vg);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
+  nvgFontFace(s->vg, "sans-regular");
+  nvgFontSize(s->vg, 100);
+  
+  direction[2] = '\0';
+  nvgText(s->vg, viz_speed_x+viz_speed_w/2, 70, direction, NULL);
 }
 
 static void ui_draw_vision_event(UIState *s) {
@@ -787,7 +933,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
       }
     // gps accuracy is always in meters
     if(scene->gpsAccuracyUblox > 99 || scene->gpsAccuracyUblox == 0) {
-       snprintf(val_str, sizeof(val_str), "None");
+       snprintf(val_str, sizeof(val_str), "--");
     }else if(scene->gpsAccuracyUblox > 9.99) {
       snprintf(val_str, sizeof(val_str), "%.1f", (s->scene.gpsAccuracyUblox));
     }
@@ -978,11 +1124,8 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char val_str[16];
     char uom_str[4];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    if(s->scene.engineRPM == 0) {
-      snprintf(val_str, sizeof(val_str), "OFF");
-    }
-    else {snprintf(val_str, sizeof(val_str), "%d", (s->scene.engineRPM));}
-    snprintf(uom_str, sizeof(uom_str), "");
+    snprintf(val_str, sizeof(val_str), "%d", (s->scene.engineRPM));
+    snprintf(uom_str, sizeof(uom_str), "%d", engineOnCount);
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ENG RPM",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
@@ -1012,8 +1155,92 @@ static void bb_ui_draw_UI(UIState *s)
 
   bb_ui_draw_measures_right(s, bb_dml_x, bb_dml_y, bb_dml_w);
   bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y-20, bb_dmr_w);
+    //Code for logging (should be moved to another file?)
+    if(scene->engineRPM > 0){
+      if(isEngineOn == 0){
+        isEngineOn = 1;
+        engineOnCount++;
+        logEngineEvent(isEngineOn, scene->odometer, scene->tripDistance, 0);
+      }
+
+       //TripDistance
+       currentTripDistance = scene->tripDistance;
+      if(currentTripDistance < previousTripDistance){
+        tripDistanceCycles++;
+      }
+      previousTripDistance = currentTripDistance;
+
+      //Stores RPM
+      if(scene->engineRPM > maxRPM){
+        maxRPM = scene->engineRPM;
+      }
+      isEngineOn = 1;
+    }
+    if(scene->engineRPM < 1){
+      if(isEngineOn == 1){
+        isEngineOn = 0;
+        logEngineEvent(isEngineOn, scene->odometer, scene->tripDistance,maxRPM);
+        previousTripDistance = 0;
+      }
+      isEngineOn = 0;
+      maxRPM = 0;
+    }
 }
 //BB END: functions added for the display of various items
+
+
+void logEngineEvent(bool EngineOn, int odometer, float tripDistance, int maxRPM)
+{
+  //Create Clarity folder if it doesn't exist
+  struct stat st = {0};
+  if(stat("/data/clarity", &st) == -1){
+    mkdir("/data/clarity", 0755);
+    FILE *out = fopen("/data/clarity/engineLog.csv", "a");
+    fprintf(out, "EngineOn/Off,DateTime,Odometer(km),Trip(km),maxRPM\n");
+    fclose(out);
+  }
+  
+  //time
+  time_t curtime;
+  struct tm *loc_time;
+  curtime = time (NULL);
+  loc_time = localtime (&curtime);
+  char currentTime[sizeof(asctime(loc_time))] = "";
+  int timeSize = 25;
+  strncpy(currentTime, asctime(loc_time), timeSize);
+  currentTime[timeSize-1] = '\0';
+  
+  
+  //Write info to log
+  FILE *out = fopen("/data/clarity/engineLog.csv", "a");
+  if(EngineOn){
+    //Captures the 2.7 kilometer cycle of the trip meter.
+    engineOnTripDistance = tripDistance;
+
+    //Resets some variables
+    tripDistanceCycles = 0;
+    previousTripDistance = 0;
+    
+    fprintf(out, "On ,%s,%i\n", currentTime, odometer);
+    
+  }else{ //EngineOff
+    engineOffTripDistance = tripDistance;
+
+    //Did not cycle.  So calcultaion is straight foward.
+    if(currentTripDistance >= previousTripDistance){
+      netTripDistance = (tripDistanceCycles * 2.7) + (engineOffTripDistance - engineOnTripDistance);
+    }
+    //Did cycle.  So calculation accounts for the cycle.
+    else{
+      netTripDistance = (tripDistanceCycles * 2.7) + (2.7 - engineOffTripDistance + engineOnTripDistance);
+    }
+    fprintf(out, "Off,%s,%i,%.2f,%i\n", currentTime, odometer, netTripDistance, maxRPM);
+
+  }
+  fclose(out);
+  tripDistanceCycles = 0;
+}
+
 
 static void ui_draw_vision_footer(UIState *s) {
   nvgBeginPath(s->vg);
@@ -1108,6 +1335,17 @@ static void ui_draw_vision(UIState *s) {
   }
 }
 
+void resetTripDistanceVariables(){
+  driveStarted = 0;
+  engineOnTripDistance = 0;
+  engineOffTripDistance = 0;
+  currentTripDistance = 0;
+  previousTripDistance = 0;
+  netTripDistance = 0;
+  tripDistanceCycles = 0;
+  engineOnCount = 0;
+}
+
 static void ui_draw_background(UIState *s) {
   int bg_status = s->status;
   assert(bg_status < ARRAYSIZE(bg_colors));
@@ -1126,7 +1364,11 @@ void ui_draw(UIState *s) {
   ui_draw_sidebar(s);
   if (s->started && s->active_app == cereal::UiLayoutState::App::NONE && s->status != STATUS_STOPPED && s->vision_seen) {
       ui_draw_vision(s);
+  }else{
+    if(driveStarted){
+      resetTripDistanceVariables();
   }
+  
   nvgEndFrame(s->vg);
   glDisable(GL_BLEND);
 }

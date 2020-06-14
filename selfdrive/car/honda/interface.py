@@ -457,6 +457,8 @@ class CarInterface(CarInterfaceBase):
     ret.lkMode = self.CS.lkMode
     ret.engineRPM = self.CS.engineRPM
     ret.brakeToggle = self.CS.brakeToggle
+    ret.odometer = self.CS.odometer
+    ret.tripDistance = self.CS.tripDistance
 
     buttonEvents = []
 

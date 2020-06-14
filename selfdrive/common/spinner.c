@@ -70,9 +70,9 @@ int spin(int argc, char** argv) {
 
   int spinner_img = nvgCreateImageMem(vg, 0, (unsigned char*)_binary_img_spinner_track_png_start, _binary_img_spinner_track_png_end - _binary_img_spinner_track_png_start);
   assert(spinner_img >= 0);
-  int spinner_img_s = 360;
+  int spinner_img_s = 1700;
   int spinner_img_x = ((fb_w/2)-(spinner_img_s/2));
-  int spinner_img_y = 260;
+  int spinner_img_y = -150;
   int spinner_img_xc = (fb_w/2);
   int spinner_img_yc = (fb_h/2)-100;
   int spinner_comma_img = nvgCreateImageMem(vg, 0, (unsigned char*)_binary_img_spinner_comma_png_start, _binary_img_spinner_comma_png_end - _binary_img_spinner_comma_png_start);
@@ -112,7 +112,7 @@ int spin(int argc, char** argv) {
     // background
     nvgBeginPath(vg);
     NVGpaint bg = nvgLinearGradient(vg, fb_w, 0, fb_w, fb_h,
-    nvgRGBA(0, 0, 0, 175), nvgRGBA(0, 0, 0, 255));
+    nvgRGBA(0, 0, 0, 255), nvgRGBA(0, 0, 0, 255));
     nvgFillPaint(vg, bg);
     nvgRect(vg, 0, 0, fb_w, fb_h);
     nvgFill(vg);
@@ -140,9 +140,9 @@ int spin(int argc, char** argv) {
 
     if (draw_progress){
       // draw progress bar
-      int progress_width = 1000;
+      int progress_width = 1800;
       int progress_x = fb_w/2-progress_width/2;
-      int progress_y = 775;
+      int progress_y = 1000;
       int progress_height = 25;
 
       NVGpaint paint = nvgBoxGradient(

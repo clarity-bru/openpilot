@@ -1,3 +1,19 @@
+This is based on Wirelessnet2's Clarity-0.7.6_Plus branch.  His readme is below mine.  I don't recommend my branch to people who are new to OpenPilot.  My warning have been toned down.
+
+
+1) Removed the colored borders.
+2) Green and orange messages are now transparent.
+3) OpenPilot engage and disengage sounds are normalized to -30 decibels.
+4) An uptime clock is at the upper left corner.
+5) Compass above the speedometer.
+6) Clarity splash screen during boot can be seen if you run "cd /data/openpilot/selfdrive/ui/spinner && make".  It will appear on the next reboot.
+7) MPC is grey.
+8) engineLog.csv can be found in /data/clarity.
+
+
+=======================================================
+
+
 Welcome to wirelessnet2's Honda Clarity OpenPilot Fork!
 
 [![](https://i.imgur.com/g20s8am.png)](#)
