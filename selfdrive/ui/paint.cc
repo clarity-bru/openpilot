@@ -1367,8 +1367,8 @@ void ui_draw(UIState *s) {
   }else{
     if(driveStarted){
       resetTripDistanceVariables();
+    }
   }
-  
   nvgEndFrame(s->vg);
   glDisable(GL_BLEND);
 }

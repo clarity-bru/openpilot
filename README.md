@@ -1,6 +1,7 @@
 This is based on Wirelessnet2's Clarity-0.7.6_Plus branch.  His readme is below mine.  I don't recommend my branch to people who are new to OpenPilot.  My warning have been toned down.
 
 
+New features:
 1) Removed the colored borders.
 2) Green and orange messages are now transparent.
 3) OpenPilot engage and disengage sounds are normalized to -30 decibels.
