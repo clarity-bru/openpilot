@@ -7,7 +7,7 @@ New features:
 3) OpenPilot engage and disengage sounds are normalized to -30 decibels.
 4) An uptime clock is at the upper left corner.
 5) Compass above the speedometer.
-6) Clarity splash screen during boot can be seen if you run "cd /data/openpilot/selfdrive/ui/spinner && make".  It will appear on the next reboot.
+6) Added a Clarity into the boot screen.  If you don't see it, you can run "cd /data/openpilot/selfdrive/ui/spinner && make" and it will appear on the next reboot.
 7) MPC is grey.
 8) engineLog.csv can be found in /data/clarity.
 
